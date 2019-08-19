@@ -11,17 +11,19 @@ class Showcase(commands.Cog):
         member = ctx.author
         await ctx.message.delete()
         if isinstance(showcase, int):
-            if showcase > 50:
-                await ctx.send("Showcases 50+ onward need staff permission or the nickname permission to be added as a tag.", delete_after=10)
-                return
+            if showcase < 0 or mysteryshowcase < 0:
+                await ctx.send("Sc count cant be negative!")
             elif mysteryshowcase > 16 or showcase > 96:
                 await ctx.send("SC count too high!", delete_after=10)
+                return
+            elif showcase > 50:
+                await ctx.send("Showcases 50+ onward need staff permission or the nickname permission to be added as a tag.", delete_after=10)
                 return
             elif showcase == 0 and mysteryshowcase == 0:
                 await ctx.send("Please specify your sc item", delete_after=10)
             elif mysteryshowcase == 0:
                 if member.nick is not None:
-                    oldnick = re.search("(.*?)(?:\(SC#)", member.nick, re.IGNORECASE).group(1)
+                    oldnick = re.search("^(.*?)(\(SC#[\d\+]*\)|)$", member.nick, re.IGNORECASE).group(1)
                     await member.edit(nick=f"{oldnick}(SC#{showcase})")
                     return
                 else:
@@ -29,7 +31,7 @@ class Showcase(commands.Cog):
                     return
             else:
                 if member.nick is not None:
-                    oldnick = re.search("(.*?)(?:\(SC#)", member.nick, re.IGNORECASE).group(1)
+                    oldnick = re.search("^(.*?)(\(SC#[\d\+]*\)|)$", member.nick, re.IGNORECASE).group(1)
                     await member.edit(nick=f"{oldnick}(SC#{showcase}+{mysteryshowcase})")
                     return
                 else:
@@ -38,7 +40,7 @@ class Showcase(commands.Cog):
         elif isinstance(showcase, str):
             if showcase == "clear":
                 if member.nick is not None:
-                    oldnick = re.search("(.*?)(?:\(SC#)", member.nick, re.IGNORECASE).group(1)
+                    oldnick = re.search("^(.*?)(\(SC#[\d\+]*\)|)$", member.nick, re.IGNORECASE).group(1)
                     await member.edit(nick=oldnick)
                     return
                 else:

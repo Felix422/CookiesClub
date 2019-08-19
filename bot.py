@@ -12,12 +12,9 @@ class Bot(commands.Bot):
         self.client = client
 
     @client.event
-    async def on_ready(self):
+    async def on_ready():
         await client.change_presence(status=discord.Status.online, activity=discord.Activity(name="with the API", type=discord.ActivityType.playing))
         print(f"Bot Logged in as {client.user.name} and ready for duty!")
-        self.aiohttp = aiohttp.ClientSession(
-				timeout=aiohttp.ClientTimeout(total=5)
-			)
 
     for filename in os.listdir("./cogs"):
         if filename.endswith(".py"):
