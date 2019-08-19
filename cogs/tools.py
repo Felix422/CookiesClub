@@ -17,6 +17,18 @@ class Tools(commands.Cog):
         embed = discord.Embed(description=f"Userinfo for {member.name}", colour=discord.Colour.grey())
         await ctx.send(embed=embed)
 
+    @commands.command()
+    async def setnick(self, ctx, member:discord.Member, *, nick):
+        await member.edit(nick=nick)
+        await ctx.send(f"Set nick for {member.name} to {nick}")
+
+    @setnick.error
+    async def setnick_error(self, ctx, error):
+        if isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send("Missing arguments")
+        else:
+            print(error)
+
 
 def setup(client):
     client.add_cog(Tools(client))
