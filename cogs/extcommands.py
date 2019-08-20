@@ -52,7 +52,18 @@ class Main(commands.Cog):
             await ctx.send("Something broke, contact Felix422")
             print(error)
 
-
+    @reload.error
+    async def reload_error(self, ctx, error):
+        error = getattr(error, "original", error)
+        if isinstance(error, discord.ext.commands.errors.ExtensionNotFound):
+            await ctx.send("Extension not found")
+            return
+        elif isinstance(error, discord.ext.commands.errors.ExtensionNotLoaded):
+            await ctx.send("Extension not loaded")
+            return
+        else:
+            await ctx.send("Something broke, contact Felix422")
+            print(error)
 
 def setup(client):
     client.add_cog(Main(client))
