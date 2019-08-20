@@ -23,19 +23,21 @@ class Showcase(commands.Cog):
                 await ctx.send("Please specify your sc item", delete_after=10)
             elif mysteryshowcase == 0:
                 if member.nick is not None:
-                    oldnick = re.search("^(.*?)(\(SC#[\d\+]*\)|)$", member.nick, re.IGNORECASE).group(1)
-                    await member.edit(nick=f"{oldnick}(SC#{showcase})")
+                    fullnick = f"{re.search("^(.*?)(\(SC#[\d\+]*\)|)$", member.nick, re.IGNORECASE).group(1)}(SC#{showcase})"
+
                     return
                 else:
-                    await member.edit(nick=f"{member.name}(SC#{showcase})")
+                    fullnick = f"{member.name}(SC#{showcase})"
+
                     return
             else:
                 if member.nick is not None:
-                    oldnick = re.search("^(.*?)(\(SC#[\d\+]*\)|)$", member.nick, re.IGNORECASE).group(1)
-                    await member.edit(nick=f"{oldnick}(SC#{showcase}+{mysteryshowcase})")
+                    fullnick = f"{re.search("^(.*?)(\(SC#[\d\+]*\)|)$", member.nick, re.IGNORECASE).group(1)}(SC#{showcase}+{mysteryshowcase})"
+
                     return
                 else:
-                    await member.edit(nick=f"{member.name}(SC#{showcase}+{mysteryshowcase})")
+                    fullnick = f"{member.name}(SC#{showcase}+{mysteryshowcase})"
+
                     return
         elif isinstance(showcase, str):
             if showcase == "clear":
