@@ -4,6 +4,7 @@ class Showcase(commands.Cog):
     def __init__(self, client):
         self.client = client
     @commands.command(aliases=["showcase"])
+    @commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
     async def sc(self, ctx, showcase:typing.Union[int, str]=0, mysteryshowcase=0):
         member = ctx.author
         await ctx.message.delete()
@@ -43,17 +44,20 @@ class Showcase(commands.Cog):
                 else:
                     await member.edit(nick=member.name)
                     return
+                    
     @sc.error
     async def sc_error(self, ctx, error):
         error = getattr(error, "original", error)
-        if isinstance(error, discord.Forbidden):
+        if isinstance(error, discord.CommandOnCooldown):
+            await ctx.send("Command on cooldown")
+        elif isinstance(error, discord.Forbidden):
             await ctx.send("im not allowed to do that!", delete_after=10)
         elif isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("Please specify your sc item", delete_after=10)
         elif isinstance(error, discord.HTTPException):
             await ctx.send("Name is longer than 32", delete_after=10)
         else:
-            print(error)
+            await ctx.send(error)
 
 def setup(client):
     client.add_cog(Showcase(client))

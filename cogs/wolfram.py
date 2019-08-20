@@ -14,7 +14,6 @@ class Wolfram(commands.Cog):
         self.bot = bot
 
     @commands.command(aliases=['w', 'wa'])
-    @commands.bot_has_permissions(embed_links=True)
     @commands.cooldown(rate=3, per=10.0, type=commands.BucketType.user)
     async def wolfram(self, ctx, *, query):
 
@@ -48,6 +47,18 @@ class Wolfram(commands.Cog):
 
         await ctx.send(embed=embed)
 
+    @wolfram.error
+    async def wolfram_error(self, ctx, error):
+        error = getattr(error, "original", error)
+        if isinstance(error, discord.ext.commands.errors.CommandOnCooldown):
+            await ctx.send("Command on cooldown")
+            return
+        if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
+            await ctx.send("Missing required argument")
+            return
+        else:
+            await ctx.send("Something broke, contact Felix422")
+            return
 
 def setup(bot):
     bot.add_cog(Wolfram(bot))

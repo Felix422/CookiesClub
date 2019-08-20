@@ -18,6 +18,10 @@ class MessageCounter(commands.Cog):
                 await message.channel.send(dictionary[index].format(message.author.mention))
                 self.client.message_counter = 0
 
+    @commands.command
+    async def counter(self, ctx):
+        await ctx.send(f"Counter is at {self.client.message_counter}")
+
 
 def setup(client):
     client.add_cog(MessageCounter(client))
