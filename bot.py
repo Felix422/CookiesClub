@@ -1,23 +1,35 @@
 import discord, logging, os, aiohttp
 from discord.ext import commands
-from config import BOT_TOKEN,COMMAND_PREFIX
+from config import BOT_TOKEN, COMMAND_PREFIX
 
 client = commands.Bot(command_prefix=COMMAND_PREFIX)
 client.remove_command('help')
 logging.basicConfig(level=logging.ERROR)
 
+
 class Bot(commands.Bot):
 
-    def __init__(self, client):
-        self.client = client
+    def __init__(self):
+        super().__init__(
+            command_prefix=COMMAND_PREFIX
+        )
 
-    @client.event
-    async def on_ready():
-        await client.change_presence(status=discord.Status.online, activity=discord.Activity(name="with the API", type=discord.ActivityType.playing))
-        print(f"Bot Logged in as {client.user.name} and ready for duty!")
+        self.remove_command('help')
 
-    for filename in os.listdir("./cogs"):
-        if filename.endswith(".py"):
-            client.load_extension(f"cogs.{filename[:-3]}")
+    async def on_ready(self):
 
-client.run(BOT_TOKEN)
+        for filename in filter(lambda filename: filename.endswith('.py'), os.listdir('cogs')):
+            cog_name = filename[:-3]
+            print('Loading {}'.format(cog_name))
+            self.load_extension('cogs.{}'.format(cog_name))
+
+        print('Initializing aiohttp')
+        self.aiohttp = aiohttp.ClientSession(
+            loop=self.loop,
+            timeout=aiohttp.ClientTimeout(total=5)
+        )
+
+        await self.change_presence(activity=discord.Activity(name="with the API", type=discord.ActivityType.playing))
+        print(f"Bot Logged in as {self.user.name} and ready for duty!")
+
+Bot().run(BOT_TOKEN)
