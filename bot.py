@@ -4,7 +4,7 @@ from config import BOT_TOKEN, COMMAND_PREFIX
 
 client = commands.Bot(command_prefix=COMMAND_PREFIX)
 client.remove_command('help')
-logging.basicConfig(level=logging.ERROR)
+logging.basicConfig(level=logging.WARN)
 
 
 class Bot(commands.Bot):
@@ -15,7 +15,8 @@ class Bot(commands.Bot):
         )
 
         self.remove_command('help')
-
+    async def on_connect(self):
+        print("Connected to discord")
     async def on_ready(self):
 
         for filename in filter(lambda filename: filename.endswith('.py'), os.listdir('cogs')):

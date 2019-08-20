@@ -55,6 +55,8 @@ class Showcase(commands.Cog):
         elif isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("Please specify your sc item", delete_after=10)
             await ctx.message.delete()
+        else:
+            print(error)
 
 def setup(client):
     client.add_cog(Showcase(client))
