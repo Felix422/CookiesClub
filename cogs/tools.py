@@ -3,13 +3,13 @@ from discord.ext import commands
 
 class Tools(commands.Cog):
 
-    def __init__(self, client):
-        self.client = client
+    def __init__(self, bot):
+        self.bot = bot
 
     @commands.command()
     @commands.cooldown(rate=2, per=10.0, type=commands.BucketType.user)
     async def ping(self, ctx):
-        await ctx.send(f"Pong! `{round(self.client.latency * 1000)}ms`")
+        await ctx.send(f"Pong! `{round(self.bot.latency * 1000)}ms`")
 
     # @commands.command()
     # @commands.cooldown(rate=3, per=10.0, type=commands.BucketType.user)
@@ -44,5 +44,5 @@ class Tools(commands.Cog):
             print(error)
 
 
-def setup(client):
-    client.add_cog(Tools(client))
+def setup(bot):
+    bot.add_cog(Tools(bot))

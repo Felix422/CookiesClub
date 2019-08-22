@@ -1,8 +1,10 @@
 import discord, re, typing
 from discord.ext import commands
 class Showcase(commands.Cog):
-    def __init__(self, client):
-        self.client = client
+
+    def __init__(self, bot):
+        self.bot = bot
+
     @commands.command(aliases=["showcase"])
     @commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
     async def sc(self, ctx, showcase:typing.Union[int, str]=0, mysteryshowcase=0):
@@ -44,7 +46,7 @@ class Showcase(commands.Cog):
                 else:
                     await member.edit(nick=member.name)
                     return
-                    
+
     @sc.error
     async def sc_error(self, ctx, error):
         error = getattr(error, "original", error)
@@ -59,5 +61,5 @@ class Showcase(commands.Cog):
         else:
             await ctx.send(error)
 
-def setup(client):
-    client.add_cog(Showcase(client))
+def setup(bot):
+    bot.add_cog(Showcase(bot))

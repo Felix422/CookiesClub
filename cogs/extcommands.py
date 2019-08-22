@@ -3,13 +3,13 @@ from discord.ext import commands
 
 class Main(commands.Cog):
 
-    def __init__(self, client):
-        self.client = client
+    def __init__(self, bot):
+        self.bot = bot
 
     @commands.command()
     @commands.has_role('Staff')
     async def load(self, ctx, extension):
-        self.client.load_extension(f"cogs.{extension}")
+        self.bot.load_extension(f"cogs.{extension}")
         print(f"Loaded cog {extension}")
         await ctx.send(f"Loaded extension {extension}")
 
@@ -18,15 +18,15 @@ class Main(commands.Cog):
     async def unload(self, ctx, extension):
         if extension == "main":
             await ctx.send("You cant unload main!")
-        self.client.unload_extension(f"cogs.{extension}")
+        self.bot.unload_extension(f"cogs.{extension}")
         print(f"Unloaded cog {extension}")
         await ctx.send(f"Unloaded extension {extension}")
 
     @commands.command()
     @commands.has_role('Staff')
     async def reload(self, ctx, extension):
-        self.client.unload_extension(f"cogs.{extension}")
-        self.client.load_extension(f"cogs.{extension}")
+        self.bot.unload_extension(f"cogs.{extension}")
+        self.bot.load_extension(f"cogs.{extension}")
         print(f"Reloaded cog {extension}")
         await ctx.send(f"Reloaded extension {extension}")
 
@@ -77,5 +77,5 @@ class Main(commands.Cog):
             await ctx.send("Something broke, contact Felix422")
             print(error)
 
-def setup(client):
-    client.add_cog(Main(client))
+def setup(bot):
+    bot.add_cog(Main(bot))
