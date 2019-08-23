@@ -14,7 +14,7 @@ class Wolfram(commands.Cog):
         self.bot = bot
 
     @commands.command(aliases=['w', 'wa'])
-    @commands.cooldown(rate=3, per=10.0, type=commands.BucketType.user)
+    @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.user)
     async def wolfram(self, ctx, *, query):
 
         params = dict(
@@ -49,12 +49,11 @@ class Wolfram(commands.Cog):
 
     @wolfram.error
     async def wolfram_error(self, ctx, error):
-        error = getattr(error, "original", error)
-        if isinstance(error, discord.ext.commands.errors.CommandOnCooldown):
-            await ctx.send("Command on cooldown")
+        if isinstance(error, discord.ext.commands.CommandOnCooldown):
+            await ctx.send(f"Command on cooldown, try again in {round(error.retry_after)}s")
             return
         elif isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-            await ctx.send("Missing required argument")
+            await ctx.send(F"You have to ask a question!")
             return
         else:
             await ctx.send("Query error")

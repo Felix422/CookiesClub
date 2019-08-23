@@ -74,7 +74,7 @@ class Showcase(commands.Cog):
     @sc.error
     async def sc_error(self, ctx, error):
         if isinstance(error, discord.ext.commands.CommandOnCooldown):
-            await ctx.send("Command on cooldown")
+            await ctx.send(f"Command on cooldown, try again in {round(error.retry_after)}s")
         elif isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
             await ctx.send("Please specify your sc item", delete_after=10)
         else:

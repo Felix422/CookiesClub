@@ -23,9 +23,8 @@ class Fun(commands.Cog):
 
     @noodleslap.error
     async def noodleslap_error(self, ctx, error):
-        error = getattr(error, "original", error)
         if isinstance(error, discord.ext.commands.errors.CommandOnCooldown):
-            await ctx.send("Command on cooldown")
+            await ctx.send(f"Command on cooldown, try again in {round(error.retry_after)}s")
             return
         elif isinstance(error, discord.ext.commands.errors.BadArgument):
             await ctx.send("Bad argument")
