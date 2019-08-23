@@ -14,7 +14,7 @@ class Wolfram(commands.Cog):
         self.bot = bot
 
     @commands.command(aliases=['w', 'wa'])
-    @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.user)
+    @commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
     async def wolfram(self, ctx, *, query):
 
         params = dict(
