@@ -8,7 +8,6 @@ class Tools(commands.Cog):
         self.bot = bot
 
     @commands.command()
-    @commands.cooldown(rate=2, per=10.0, type=commands.BucketType.user)
     async def ping(self, ctx):
         await ctx.message.delete()
         await ctx.send(f"Pong! `{round(self.bot.latency * 1000)}ms`", delete_after=10)
@@ -76,15 +75,8 @@ class Tools(commands.Cog):
             return
         await member.edit(nick=member.name)
 
-    @ping.error
-    async def ping_error(self, ctx, error):
-        error = getattr(error, "original", error)
-        if isinstance(error, discord.ext.commands.errors.CommandOnCooldown):
-            await ctx.send("Command on cooldown")
-
     @setnick.error
     async def setnick_error(self, ctx, error):
-        error = getattr(error, "original", error)
         if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
             await ctx.send("Missing arguments")
         elif isinstance(error, discord.ext.commands.errors.MissingRole):
@@ -94,6 +86,14 @@ class Tools(commands.Cog):
             await ctx.send("Something broke, contact Felix422")
             print(error)
 
+    @resetnick.error
+    async def resetnick_error(self, ctx, error):
+        if isinstance(error, discord.ext.commands.errors.MissingRole):
+            await ctx.send("You don't have permission for this")
+            return
+        else:
+            await ctx.send("Something broke, contact Felix422")
+            print(error)
 
 def setup(bot):
     bot.add_cog(Tools(bot))
