@@ -35,6 +35,26 @@ class Tools(commands.Cog):
             e.add_field(name="Description:", value="Sets your SC tag", inline=False)
             e.add_field(name="Aliases:", value="showcase, sc", inline=False)
             await ctx.send(embed=e)
+            return
+        elif command.lower() == "noodleslap":
+            e.set_author(name="Noodlesllap")
+            e.add_field(name="Usage:", value=".noodleslap [user]")
+            e.add_field(name="Description:", value="Slaps someone with noddles", inline=False)
+            await ctx.send(embed=e)
+            return
+        elif command.lower() == "wolfram" or command.lower() == "w":
+            e.set_author(name="Wolfram")
+            e.add_field(name="Usage:", value=".wolfram [question]")
+            e.add_field(name="Description:", value="Queries Wolfram alpha", inline=False)
+            e.add_field(name="Aliases:", value="wolfram, w, we", inline=False)
+            await ctx.send(embed=e)
+            return
+        elif command.lower() == "ping":
+            e.set_author(name="Ping")
+            e.add_field(name="Usage:", value=".ping")
+            e.add_field(name="Description:", value="Shows the bots latency", inline=False)
+            await ctx.send(embed=e)
+            return
 
     @commands.command()
     @commands.has_role('Staff')
