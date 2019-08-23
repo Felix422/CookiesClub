@@ -39,6 +39,12 @@ class Tools(commands.Cog):
     @commands.command()
     @commands.has_role('Staff')
     async def setnick(self, ctx, member:discord.Member, *, nick):
+        if member == ctx.guild.owner:
+            await ctx.send("I can't edit the server owner!")
+            return
+        if len(nick) > 32:
+            await ctx.send("Nickname too long!")
+            return
         await member.edit(nick=nick)
         await ctx.send(f"Set nick for {member.name} to {nick}")
 
@@ -54,7 +60,7 @@ class Tools(commands.Cog):
         if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
             await ctx.send("Missing arguments")
         elif isinstance(error, discord.ext.commands.errors.MissingRole):
-            await ctx.send("You dont have permission for this")
+            await ctx.send("You don't have permission for this")
             return
         else:
             await ctx.send("Something broke, contact Felix422")
