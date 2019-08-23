@@ -48,6 +48,14 @@ class Tools(commands.Cog):
         await member.edit(nick=nick)
         await ctx.send(f"Set nick for {member.name} to {nick}")
 
+    @commands.command()
+    @commands.has_role('Staff')
+    async def resetnick(self, ctx, member:discord.Member):
+        if member == ctx.guild.owner:
+            await ctx.send("I can't edit the server owner!")
+            return
+        await member.edit(nick=member.name)
+
     @ping.error
     async def ping_error(self, ctx, error):
         error = getattr(error, "original", error)
