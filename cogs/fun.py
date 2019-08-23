@@ -7,7 +7,7 @@ class Fun(commands.Cog):
         self.bot = bot
 
     @commands.command(aliases=["noddleslap"])
-    @commands.cooldown(rate=3, per=10.0, type=commands.BucketType.user)
+    @commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
     async def noodleslap(self, ctx, member:discord.Member):
         if member == ctx.author:
             await ctx.send("You can't slap yourself!")
@@ -20,6 +20,11 @@ class Fun(commands.Cog):
             return
         else:
             await ctx.send(f"*Slaps {member.mention} with noddles*")
+
+    @commands.command()
+    @commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
+    async def baguette(self, ctx):
+        await ctx.send("<a:nitroflex:592025304105615371>")
 
     @noodleslap.error
     async def noodleslap_error(self, ctx, error):
@@ -35,6 +40,11 @@ class Fun(commands.Cog):
         else:
             await ctx.send("Something broke, contact Felix422")
             return
+     @baguette.error
+     async def baguette_error(self, ctx, error):
+         if isinstance(error, discord.ext.commands.errors.CommandOnCooldown):
+             await ctx.send(f"Command on cooldown, try again in {round(error.retry_after)}s")
+
 
 
 def setup(bot):
