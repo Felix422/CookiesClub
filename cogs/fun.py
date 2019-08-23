@@ -40,12 +40,11 @@ class Fun(commands.Cog):
         else:
             await ctx.send("Something broke, contact Felix422")
             return
-     @baguette.error
-     async def baguette_error(self, ctx, error):
+
+    @baguette.error
+    async def baguette_error(self, ctx, error):
          if isinstance(error, discord.ext.commands.errors.CommandOnCooldown):
              await ctx.send(f"Command on cooldown, try again in {round(error.retry_after)}s")
-
-
 
 def setup(bot):
     bot.add_cog(Fun(bot))
