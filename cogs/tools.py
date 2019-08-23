@@ -54,6 +54,8 @@ class Tools(commands.Cog):
             e.add_field(name="Description:", value="Shows the bots latency", inline=False)
             await ctx.send(embed=e)
             return
+        else:
+            await ctx.send(f"Command `{command}` not found")
 
     @commands.command()
     @commands.has_role('Staff')
