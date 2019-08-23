@@ -6,7 +6,7 @@ class Showcase(commands.Cog):
         self.bot = bot
 
     @commands.command(aliases=["showcase"])
-    @commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
+    @commands.cooldown(rate=2, per=10.0, type=commands.BucketType.user)
     async def sc(self, ctx, showcase:typing.Union[int, str]=0, mysteryshowcase=0):
         member = ctx.author
         if member == ctx.guild.owner:
