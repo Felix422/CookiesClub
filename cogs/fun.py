@@ -16,7 +16,7 @@ class Fun(commands.Cog):
             await ctx.send("You cant slap me im invincible!")
             return
         elif member.id == 285738922519035904:
-            await ctx.send(f"*Slaps {ctx.author.name} with noddles*")
+            await ctx.send(f"*Slaps {ctx.author.mention} with noddles*")
             return
         else:
             await ctx.send(f"*Slaps {member.mention} with noddles*")
