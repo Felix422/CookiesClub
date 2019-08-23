@@ -47,7 +47,7 @@ class Showcase(commands.Cog):
                     oldnick = re.search("^(.*?)(\(SC\s?#\s?[\d\+]*\)|)$", member.nick, re.IGNORECASE).group(1)
                     fullnick = f"{oldnick}(SC#{showcase}+{mysteryshowcase})"
                     if len(fullnick) > 32:
-                        await ctx.send("Name is too long!")
+                        await ctx.send("Nickname too long!")
                         return
                     await member.edit(nick=fullnick)
                     await ctx.send(f"Changed nickname to {fullnick}")
