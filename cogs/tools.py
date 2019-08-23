@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from datetime import datetime
 
 class Tools(commands.Cog):
 
@@ -9,7 +10,8 @@ class Tools(commands.Cog):
     @commands.command()
     @commands.cooldown(rate=2, per=10.0, type=commands.BucketType.user)
     async def ping(self, ctx):
-        await ctx.send(f"Pong! `{round(self.bot.latency * 1000)}ms`")
+        await ctx.message.delete()
+        await ctx.send(f"Pong! `{round(self.bot.latency * 1000)}ms`", delete_after=10)
 
     # @commands.command()
     # @commands.cooldown(rate=3, per=10.0, type=commands.BucketType.user)
@@ -18,6 +20,21 @@ class Tools(commands.Cog):
     #         member = ctx.author
     #     embed = discord.Embed(description=f"Userinfo for {member.name}", colour=discord.Colour.grey())
     #     await ctx.send(embed=embed)
+
+    @commands.command()
+    @commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
+    async def help(self, ctx, command=None):
+        e = discord.Embed(colour=discord.Color.green())
+        if command is None:
+            e.add_field(name="Commands:",value=".showcase\n.noodleslap\n.wolfram\n.ping")
+            await ctx.send(embed=e)
+            return
+        elif command.lower() == "showcase" or command.lower() == "sc":
+            e.set_author(name="Showcase")
+            e.add_field(name="Usage:", value=".showcase [SC] [MSC(Optional)]\n.showcase clear")
+            e.add_field(name="Description:", value="Sets your SC tag", inline=False)
+            e.add_field(name="Aliases:", value="showcase, sc", inline=False)
+            await ctx.send(embed=e)
 
     @commands.command()
     @commands.has_role('Staff')

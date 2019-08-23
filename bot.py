@@ -30,7 +30,7 @@ class Bot(commands.Bot):
             timeout=aiohttp.ClientTimeout(total=5)
         )
 
-        await self.change_presence(activity=discord.Activity(name="with the API", type=discord.ActivityType.playing))
+        await self.change_presence(status=discord.Status.online, activity=discord.Activity(name="all those bad suggestions", type=discord.ActivityType.watching))
         print(f"Bot Logged in as {self.user.name} and ready for duty!")
 
 Bot().run(BOT_TOKEN)

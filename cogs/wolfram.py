@@ -53,11 +53,11 @@ class Wolfram(commands.Cog):
         if isinstance(error, discord.ext.commands.errors.CommandOnCooldown):
             await ctx.send("Command on cooldown")
             return
-        if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
+        elif isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
             await ctx.send("Missing required argument")
             return
         else:
-            await ctx.send("Something broke, contact Felix422")
+            await ctx.send("Query error")
             return
 
 def setup(bot):

@@ -9,56 +9,76 @@ class Showcase(commands.Cog):
     @commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
     async def sc(self, ctx, showcase:typing.Union[int, str]=0, mysteryshowcase=0):
         member = ctx.author
-        await ctx.message.delete()
+        if member == ctx.guild.owner:
+            await ctx.send("I cant edit the server owner!")
+            return
+        # await ctx.message.delete()
         if isinstance(showcase, int):
             if showcase < 0 or mysteryshowcase < 0:
                 await ctx.send("Sc count cant be negative!")
             elif mysteryshowcase > 16 or showcase > 96:
-                await ctx.send("SC count too high!", delete_after=10)
+                await ctx.send("SC count too high!")
                 return
-            elif showcase > 50:
-                await ctx.send("Showcases 50+ onward need staff permission or the nickname permission to be added as a tag.", delete_after=10)
+            elif showcase > 70:
+                await ctx.send("Showcases 70+ onward need staff permission or the nickname permission to be added as a tag.")
                 return
             elif showcase == 0 and mysteryshowcase == 0:
-                await ctx.send("Please specify your sc item", delete_after=10)
+                await ctx.send("Please specify an SC item!")
             elif mysteryshowcase == 0:
                 if member.nick is not None:
-                    oldnick = re.search("^(.*?)(\(SC#[\d\+]*\)|)$", member.nick, re.IGNORECASE).group(1)
-                    await member.edit(nick=f"{oldnick}(SC#{showcase})")
+                    oldnick = re.search("^(.*?)(\(SC\s?#\s?[\d\+]*\)|)$", member.nick, re.IGNORECASE).group(1)
+                    fullnick = f"{oldnick}(SC#{showcase})"
+                    if len(fullnick) > 32:
+                        await ctx.send("Name is too long!")
+                        return
+                    await member.edit(nick=fullnick)
+                    await ctx.send(f"Changed your nickname to {fullnick}")
                     return
                 else:
-                    await member.edit(nick=f"{member.name}(SC#{showcase})")
+                    fullnick = f"{member.name}(SC#{showcase})"
+                    if len(fullnick) > 32:
+                        await ctx.send("Name is too long!")
+                        return
+                    await member.edit(nick=fullnick)
+                    await ctx.send(f"Changed your nickname to {fullnick}")
                     return
             else:
                 if member.nick is not None:
-                    oldnick = re.search("^(.*?)(\(SC#[\d\+]*\)|)$", member.nick, re.IGNORECASE).group(1)
-                    await member.edit(nick=f"{oldnick}(SC#{showcase}+{mysteryshowcase})")
+                    oldnick = re.search("^(.*?)(\(SC\s?#\s?[\d\+]*\)|)$", member.nick, re.IGNORECASE).group(1)
+                    fullnick = f"{oldnick}(SC#{showcase}+{mysteryshowcase})"
+                    if len(fullnick) > 32:
+                        await ctx.send("Name is too long!")
+                        return
+                    await member.edit(nick=fullnick)
+                    await ctx.send(f"Changed nickname to {fullnick}")
                     return
                 else:
-                    await member.edit(nick=f"{member.name}(SC#{showcase}+{mysteryshowcase})")
+                    fullnick = f"{member.name}(SC#{showcase}+{mysteryshowcase})"
+                    if len(fullnick) > 32:
+                        await ctx.send("Name is too long!")
+                        return
+                    await member.edit(nick=fullnick)
+                    await ctx.send(f"Changed nickname to {fullnick}")
                     return
         elif isinstance(showcase, str):
             if showcase == "clear":
                 if member.nick is not None:
-                    oldnick = re.search("^(.*?)(\(SC#[\d\+]*\)|)$", member.nick, re.IGNORECASE).group(1)
+                    oldnick = re.search("^(.*?)(\(SC\s?#\s?[\d\+]*\)|)$", member.nick, re.IGNORECASE).group(1)
                     await member.edit(nick=oldnick)
                     return
                 else:
                     await member.edit(nick=member.name)
                     return
 
+
     @sc.error
     async def sc_error(self, ctx, error):
-        error = getattr(error, "original", error)
-        if isinstance(error, discord.CommandOnCooldown):
+        if isinstance(error, discord.ext.commands.CommandOnCooldown):
             await ctx.send("Command on cooldown")
-        elif isinstance(error, discord.Forbidden):
-            await ctx.send("im not allowed to do that!", delete_after=10)
-        elif isinstance(error, commands.MissingRequiredArgument):
+        elif isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
             await ctx.send("Please specify your sc item", delete_after=10)
-        elif isinstance(error, discord.HTTPException):
-            await ctx.send("Name is longer than 32", delete_after=10)
         else:
+            print(error)
             await ctx.send(error)
 
 def setup(bot):
