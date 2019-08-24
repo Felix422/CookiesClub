@@ -51,8 +51,15 @@ class Info(commands.Cog):
     @commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
     async def acronyms(self, ctx):
         e = discord.Embed(color=discord.Color.green())
-        e.add_field(name="Acronyms", value="CC = Cupcakes\nRC = Rainbow cookies\nDC = Dark cookies\nLC = Light cookies")
+        e.add_field(name="Acronyms", value="SC = Showcase\nMSC = Mystery showcase\nCC = Cupcakes\nRC = Rainbow cookies\nDC = Dark cookies\nLC = Light cookies\nIG = Intergalactic baker")
         await ctx.send(embed=e)
+
+    @acronyms.error
+    async def acronyms_error(self, ctx, error):
+        if isinstance(error, discord.ext.commands.errors.CommandOnCooldown):
+            await ctx.send(f"Command on cooldown, try again in {round(error.retry_after)}s")
+        else:
+            await ctx.send("Something broke, contact Felix422")
 
     @help.error
     async def help_error(self, ctx, error):
