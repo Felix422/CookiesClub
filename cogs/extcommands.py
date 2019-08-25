@@ -13,23 +13,6 @@ class Main(commands.Cog):
         print(f"Loaded cog {extension}")
         await ctx.send(f"Loaded extension {extension}")
 
-    @commands.command()
-    @commands.has_role('Staff')
-    async def unload(self, ctx, extension):
-        if extension == "main":
-            await ctx.send("You cant unload main!")
-        self.bot.unload_extension(f"cogs.{extension}")
-        print(f"Unloaded cog {extension}")
-        await ctx.send(f"Unloaded extension {extension}")
-
-    @commands.command()
-    @commands.has_role('Staff')
-    async def reload(self, ctx, extension):
-        self.bot.unload_extension(f"cogs.{extension}")
-        self.bot.load_extension(f"cogs.{extension}")
-        print(f"Reloaded cog {extension}")
-        await ctx.send(f"Reloaded extension {extension}")
-
     @load.error
     async def load_error(self, ctx, error):
         error = getattr(error, "original", error)
@@ -46,6 +29,15 @@ class Main(commands.Cog):
             await ctx.send("Something broke, contact Felix422")
             print(error)
 
+    @commands.command()
+    @commands.has_role('Staff')
+    async def unload(self, ctx, extension):
+        if extension == "main":
+            await ctx.send("You cant unload main!")
+        self.bot.unload_extension(f"cogs.{extension}")
+        print(f"Unloaded cog {extension}")
+        await ctx.send(f"Unloaded extension {extension}")
+
     @unload.error
     async def unload_error(self, ctx, error):
         error = getattr(error, "original", error)
@@ -60,6 +52,14 @@ class Main(commands.Cog):
         else:
             await ctx.send("Something broke, contact Felix422")
             print(error)
+
+    @commands.command()
+    @commands.has_role('Staff')
+    async def reload(self, ctx, extension):
+        self.bot.unload_extension(f"cogs.{extension}")
+        self.bot.load_extension(f"cogs.{extension}")
+        print(f"Reloaded cog {extension}")
+        await ctx.send(f"Reloaded extension {extension}")
 
     @reload.error
     async def reload_error(self, ctx, error):
