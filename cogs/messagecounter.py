@@ -18,10 +18,12 @@ class MessageCounter(commands.Cog):
                 self.bot.message_counter = 0
 
     @commands.command()
+    @commands.has_role("Staff")
     async def counter(self, ctx):
         await ctx.send(f"Counter is at {self.bot.message_counter}")
 
     @commands.command()
+    @commands.has_role("Staff")
     async def countertest(self, ctx):
         await ctx.channel.send(dictionary[random.randint(0, len(dictionary) - 1)].format(ctx.author.mention))
 
