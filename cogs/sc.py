@@ -71,7 +71,6 @@ class Showcase(commands.Cog):
                     await member.edit(nick=oldnick)
                     return
                 else:
-                    await member.edit(nick=member.name)
                     return
 
 
