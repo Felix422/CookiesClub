@@ -11,15 +11,19 @@ class Fun(commands.Cog):
     async def noodleslap(self, ctx, member:discord.Member):
         if member.id == 285738922519035904:
             await ctx.send(f"*Slaps {ctx.author.mention} with noddles*")
+            print(f"{ctx.author.name} tried slapping Felix!")
             return
         elif member == self.bot.user:
             await ctx.send("You cant slap me im invincible!")
+            print(f"{ctx.author.name} tried slapping the bot!")
             return
         elif member == ctx.author:
             await ctx.send("You can't slap yourself!")
+            print(f"{ctx.author.name} tried slapping themself")
             return
         else:
             await ctx.send(f"*Slaps {member.mention} with noddles*")
+            print(f"Slapped {member.name} with noodles")
 
     @commands.command()
     @commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
