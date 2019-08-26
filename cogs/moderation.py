@@ -11,6 +11,7 @@ class Moderation(commands.Cog):
     async def clear(self, ctx, amount : int):
         await ctx.channel.purge(limit=amount + 1)
         await ctx.send(f"Purged {amount} messages", delete_after=5)
+        print(f"{ctx.author.name} purged {amount} messages")
 
     @clear.error
     async def clear_error(self, ctx, error):
@@ -23,10 +24,10 @@ class Moderation(commands.Cog):
         banned_users = await ctx.guild.bans()
         member_name, member_discriminator = member.split("#")
         for ban_entry in banned_users:
-            user = ban_entry.user
-            if (user.name, user.discriminator) == (member_name, member_discriminator):
+            if (ban_entry.user.name, ban_entry.user.discriminator) == (member_name, member_discriminator):
                 await ctx.guild.unban(user)
-                await ctx.send(f"Unbanned {user.mention}")
+                await ctx.send(f"Unbanned {ban_entry.user.name}")
+                print(f"Unbanned {ban.entry.user.name}")
                 return
 
     @unban.error
