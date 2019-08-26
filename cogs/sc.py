@@ -33,6 +33,7 @@ class Showcase(commands.Cog):
                         return
                     await member.edit(nick=fullnick)
                     await ctx.send(f"Changed your nickname to {fullnick}")
+                    print(f"Changed nickname for {member.name} to {fullnick}")
                     return
                 else:
                     fullnick = f"{member.name}(SC#{showcase})"
@@ -41,6 +42,7 @@ class Showcase(commands.Cog):
                         return
                     await member.edit(nick=fullnick)
                     await ctx.send(f"Changed your nickname to {fullnick}")
+                    print(f"Changed nickname for {member.name} to {fullnick}")
                     return
             else:
                 if member.nick is not None:
@@ -50,7 +52,8 @@ class Showcase(commands.Cog):
                         await ctx.send("Nickname too long!")
                         return
                     await member.edit(nick=fullnick)
-                    await ctx.send(f"Changed nickname to {fullnick}")
+                    await ctx.send(f"Changed your nickname to {fullnick}")
+                    print(f"Changed nickname for {member.name} to {fullnick}")
                     return
                 else:
                     fullnick = f"{member.name}(SC#{showcase}+{mysteryshowcase})"
@@ -58,7 +61,8 @@ class Showcase(commands.Cog):
                         await ctx.send("Name is too long!")
                         return
                     await member.edit(nick=fullnick)
-                    await ctx.send(f"Changed nickname to {fullnick}")
+                    await ctx.send(f"Changed your nickname to {fullnick}")
+                    print(f"Changed nickname for {member.name} to {fullnick}")
                     return
         elif isinstance(showcase, str):
             if showcase == "clear":
