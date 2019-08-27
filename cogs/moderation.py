@@ -10,8 +10,11 @@ class Moderation(commands.Cog):
     @commands.has_role("Staff")
     async def clear(self, ctx, amount : int):
         await ctx.channel.purge(limit=amount + 1)
-        await ctx.send(f"Purged {amount} messages", delete_after=5)
-        print(f"{ctx.author.name} purged {amount} messages")
+        if amount == 1:
+            await ctx.send(f"Purged {amount} message", delete_after=10)
+        else:
+            await ctx.send(f"Purged {amount} messages", delete_after=10)
+        print(f"{ctx.author.name} purged {amount} messages in #{ctx.message.channel.name} on {ctx.message.guild.name}")
 
     @clear.error
     async def clear_error(self, ctx, error):
