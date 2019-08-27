@@ -39,7 +39,11 @@ class Fun(commands.Cog):
             await ctx.send("Bad argument")
             return
         elif isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-            await ctx.send("Missing required argument")
+            e = discord.Embed(colour=discord.Color.green())
+            e.set_author(name="Noodleslap")
+            e.add_field(name="Usage:", value=".noodleslap [user]")
+            e.add_field(name="Description:", value="Slaps someone with noddles", inline=False)
+            await ctx.send(embed=e)
             return
         else:
             await ctx.send("Something broke, contact Felix422")
