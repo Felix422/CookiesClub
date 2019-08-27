@@ -11,6 +11,7 @@ class Tools(commands.Cog):
     async def ping(self, ctx):
         await ctx.message.delete()
         await ctx.send(f"Pong! `{round(self.bot.latency * 1000)}ms`", delete_after=10)
+        print(f"Ping is {round(self.bot.latency * 1000)}ms")
 
     # @commands.command()
     # @commands.cooldown(rate=3, per=10.0, type=commands.BucketType.user)
