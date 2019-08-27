@@ -23,7 +23,13 @@ class Showcase(commands.Cog):
                 await ctx.send("Showcases 70+ onward need staff permission or the nickname permission to be added as a tag.")
                 return
             elif showcase == 0 and mysteryshowcase == 0:
-                await ctx.send("Please specify an SC item!")
+                e = discord.Embed(colour=discord.Color.green())
+                e.set_author(name="Showcase")
+                e.add_field(name="Usage:", value=".showcase [SC] [MSC(Optional)]\n.showcase clear")
+                e.add_field(name="Description:", value="Sets your SC tag", inline=False)
+                e.add_field(name="Aliases:", value="showcase, sc", inline=False)
+                await ctx.send(embed=e)
+                return
             elif mysteryshowcase == 0:
                 if member.nick is not None:
                     oldnick = re.search("^(.*?)(\(SC\s?#\s?[-?\d\+]*\)|)$", member.nick, re.IGNORECASE).group(1)
@@ -78,8 +84,6 @@ class Showcase(commands.Cog):
     async def sc_error(self, ctx, error):
         if isinstance(error, discord.ext.commands.CommandOnCooldown):
             await ctx.send(f"Command on cooldown, try again in {round(error.retry_after)}s")
-        elif isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-            await ctx.send("Please specify your sc item", delete_after=10)
         else:
             print(error)
             await ctx.send(error)
