@@ -6,21 +6,26 @@ class MessageCounter(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-        self.bot.message_counter = 0
+        self.message_counter = 0
+        self.messages_required = random.randint(200, 400)
+        print(f"Message requirement is {self.messages_required}")
 
     @commands.Cog.listener()
     async def on_message(self, message):
         if message.channel.name == "general":
-            self.bot.message_counter += 1
-            if self.bot.message_counter == 300:
+            self.message_counter += 1
+            if self.message_counter == self.messages_required:
                 index = random.randint(0, len(dictionary) - 1)
                 await message.channel.send(dictionary[index].format(message.author.mention))
-                self.bot.message_counter = 0
+                print(f"Sent counter message")
+                self.message_counter = 0
+                self.messages_required = random.randint(200, 300)
+                print(f"New message requirement is {self.messages_required}")
 
     @commands.command()
     @commands.has_role("Staff")
     async def counter(self, ctx):
-        await ctx.send(f"Counter is at {self.bot.message_counter}")
+        await ctx.send(f"Counter is at {self.message_counter}")
 
     @commands.command()
     @commands.has_role("Staff")
