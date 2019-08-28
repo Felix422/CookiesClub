@@ -9,8 +9,9 @@ class Fun(commands.Cog):
     @commands.command(aliases=["noddleslap"])
     @commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
     async def noodleslap(self, ctx, member:discord.Member):
+        await ctx.message.delete()
         if member.id == 285738922519035904:
-            await ctx.send(f"*Slaps {ctx.author.mention} with noddles*")
+            await ctx.send(f"*Slaps {ctx.author.name} with noddles*")
             print(f"{ctx.author.name} tried slapping Felix!")
             return
         elif member == self.bot.user:
@@ -22,12 +23,13 @@ class Fun(commands.Cog):
             print(f"{ctx.author.name} tried slapping themself")
             return
         else:
-            await ctx.send(f"*Slaps {member.mention} with noddles*")
+            await ctx.send(f"*Slaps {member.name} with noddles*")
             print(f"Slapped {member.name} with noodles")
 
     @commands.command()
     @commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
     async def baguette(self, ctx):
+        await ctx.message.delete()
         await ctx.send("<a:nitroflex:592025304105615371>")
 
     @noodleslap.error
