@@ -2,7 +2,7 @@ import discord, logging, os, aiohttp
 from discord.ext import commands
 from config import BOT_TOKEN, COMMAND_PREFIX
 
-logging.basicConfig(level=logging.WARN)
+logging.basicConfig(level=logging.ERROR)
 
 
 class Bot(commands.Bot):
