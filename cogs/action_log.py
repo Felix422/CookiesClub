@@ -32,7 +32,7 @@ class Action_log(commands.Cog):
         channel = discord.utils.get(message_before.guild.text_channels, name="action_log")
         if message_before.author.bot is True:
             return
-        e = discord.Embed(description=f"**Message edited in** <#{message_after.channel.id}> [Jump to message]({message_after.jump_url})", color=discord.Color.blue(), timestamp=datetime.utcnow())
+        e = discord.Embed(description=f"**Message edited in** <#{message_after.channel.id}> [Jump to message]({message_after.jump_url})", color=discord.Color.blurple(), timestamp=datetime.utcnow())
         try:
             e.add_field(name="Before", value=f"{message_before.content}", inline=False)
             e.add_field(name="After", value=f"{message_after.content}")
@@ -57,9 +57,9 @@ class Action_log(commands.Cog):
     async def on_bulk_message_delete(self, messages):
             channel = discord.utils.get(messages[0].guild.text_channels, name="action_log")
             if len(messages)-1 == 1:
-                e = discord.Embed(description=f"**Bulk deleted {len(messages) - 1} message in <#{messages[0].channel.id}>**", color=discord.Color.blue(), timestamp=datetime.utcnow())
+                e = discord.Embed(description=f"**Bulk deleted {len(messages) - 1} message in <#{messages[0].channel.id}>**", color=discord.Color.blurple(), timestamp=datetime.utcnow())
             else:
-                e = discord.Embed(description=f"**Bulk deleted {len(messages) - 1} messages in <#{messages[0].channel.id}>**", color=discord.Color.blue(), timestamp=datetime.utcnow())
+                e = discord.Embed(description=f"**Bulk deleted {len(messages) - 1} messages in <#{messages[0].channel.id}>**", color=discord.Color.blurple(), timestamp=datetime.utcnow())
             e.set_author(name=messages[0].guild.name, icon_url=messages[0].guild.icon_url)
             await channel.send(embed=e)
             purge_channel = messages[0].channel
