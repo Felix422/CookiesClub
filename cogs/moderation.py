@@ -11,10 +11,15 @@ class Moderation(commands.Cog):
     @commands.has_role("Staff")
     async def clear(self, ctx, amount : int):
         await ctx.channel.purge(limit=amount + 1)
+        channel = discord.uils.get(ctx.guild.text_channels, name="action_log")
         if amount == 1:
             await ctx.send(f"Purged {amount} message", delete_after=10)
+            e = discord.Embed(description=f"Purged {amount} message in <#{ctx.channel.id}>")
         else:
             await ctx.send(f"Purged {amount} messages", delete_after=10)
+            e = discord.Embed(description=f"Purged {amount} messages in <#{ctx.channel.id}>")
+        e.set_author(name=ctx.author.name, icon_url=ctx.guild.icon)
+        channel.send(embed=e)
         print(f"{ctx.author.name} purged {amount} messages in #{ctx.message.channel.name} on {ctx.message.guild.name}")
 
     @clear.error
