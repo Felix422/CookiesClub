@@ -5,9 +5,9 @@ class Showcase(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(aliases=["showcase"])
+    @commands.command(aliases=["sc"])
     @commands.cooldown(rate=2, per=10.0, type=commands.BucketType.user)
-    async def sc(self, ctx, showcase:typing.Union[int, str]=0, mysteryshowcase=0):
+    async def showcase(self, ctx, showcase:typing.Union[int, str]=0, mysteryshowcase=0):
         member = ctx.author
         if member == ctx.guild.owner:
             await ctx.send("I cant edit the server owner!")
@@ -80,7 +80,7 @@ class Showcase(commands.Cog):
                     return
 
 
-    @sc.error
+    @showcase.error
     async def sc_error(self, ctx, error):
         if isinstance(error, discord.ext.commands.CommandOnCooldown):
             await ctx.send(f"Command on cooldown, try again in {round(error.retry_after)}s")
