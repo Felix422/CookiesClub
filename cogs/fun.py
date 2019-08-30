@@ -9,13 +9,12 @@ class Fun(commands.Cog):
     @commands.command(aliases=["noddleslap"])
     @commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
     async def noodleslap(self, ctx, member:discord.Member):
-        await ctx.message.delete()
         if member.id == 285738922519035904:
             await ctx.send(f"*Slaps {ctx.author.name} with noddles*")
             print(f"{ctx.author.name} tried slapping Felix!")
             return
         elif member == self.bot.user:
-            await ctx.send("You cant slap me im invincible!")
+            await ctx.send(":(")
             print(f"{ctx.author.name} tried slapping the bot!")
             return
         elif member == ctx.author:
