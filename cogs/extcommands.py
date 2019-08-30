@@ -1,4 +1,4 @@
-import discord
+import discord, os
 from discord.ext import commands
 
 class Main(commands.Cog):
@@ -56,6 +56,14 @@ class Main(commands.Cog):
     @commands.command()
     @commands.has_role('Staff')
     async def reload(self, ctx, extension):
+        if extension == "all":
+            print(f"reloading all Cogs")
+            for filename in filter(lambda filename: filename.endswith(".py"), os.listdir("cogs")):
+                cog_name = filename[:-3]
+                self.bot.unload_extension(f"cogs.{cog_name}")
+                self.bot.load_extension(f"cogs.{cog_name}")
+            await ctx.send("Reloaded all extensions")
+            return
         self.bot.unload_extension(f"cogs.{extension}")
         self.bot.load_extension(f"cogs.{extension}")
         print(f"Reloaded cog {extension}")
