@@ -18,12 +18,12 @@ class Bot(commands.Bot):
         print("Connected to discord")
 
     async def on_ready(self):
-
+        extensions = 0
         for filename in filter(lambda filename: filename.endswith(".py"), os.listdir("cogs")):
             cog_name = filename[:-3]
-            print(f"Loading {cog_name}")
+            extensions += 1
             self.load_extension(f"cogs.{cog_name}")
-
+        print(f"Loaded {extensions} extensions")
         print("Initializing aiohttp")
         self.aiohttp = aiohttp.ClientSession(
             loop=self.loop,
