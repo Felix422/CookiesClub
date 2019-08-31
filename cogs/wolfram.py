@@ -15,7 +15,15 @@ class Wolfram(commands.Cog):
 
     @commands.command(aliases=['w', 'wa'])
     @commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
-    async def wolfram(self, ctx, *, query):
+    async def wolfram(self, ctx, *, query="defaultdontsearchthis"):
+        if query == "defaultdontsearchthis":
+            e = discord.Embed(colour=discord.Color.green())
+            e.set_author(name="Wolfram")
+            e.add_field(name="Usage:", value=".wolfram [question]")
+            e.add_field(name="Description:", value="Queries Wolfram Alpha", inline=False)
+            e.add_field(name="Aliases:", value="wolfram, w, we", inline=False)
+            await ctx.send(embed=e)
+            return
 
         params = dict(
             appid=WOLFRAM_KEY,
@@ -51,9 +59,6 @@ class Wolfram(commands.Cog):
     async def wolfram_error(self, ctx, error):
         if isinstance(error, discord.ext.commands.CommandOnCooldown):
             await ctx.send(f"Command on cooldown, try again in {round(error.retry_after)}s")
-            return
-        elif isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-            await ctx.send(F"You have to ask a question!")
             return
         else:
             await ctx.send("Query error")
