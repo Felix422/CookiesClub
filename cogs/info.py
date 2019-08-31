@@ -29,7 +29,7 @@ class Info(commands.Cog):
         elif command.lower() == "wolfram" or command.lower() == "w":
             e.set_author(name="Wolfram")
             e.add_field(name="Usage:", value=".wolfram [question]")
-            e.add_field(name="Description:", value="Queries Wolfram alpha", inline=False)
+            e.add_field(name="Description:", value="Queries Wolfram Alpha", inline=False)
             e.add_field(name="Aliases:", value="wolfram, w, we", inline=False)
             await ctx.send(embed=e)
             return
