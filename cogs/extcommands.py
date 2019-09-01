@@ -1,7 +1,7 @@
 import discord, os
 from discord.ext import commands
 
-class Main(commands.Cog):
+class Extensions(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
@@ -32,8 +32,8 @@ class Main(commands.Cog):
     @commands.command()
     @commands.has_role('Staff')
     async def unload(self, ctx, extension):
-        if extension == "main":
-            await ctx.send("You cant unload main!")
+        if extension == "extcommands":
+            await ctx.send("You cant unload this!")
         self.bot.unload_extension(f"cogs.{extension}")
         print(f"Unloaded cog {extension}")
         await ctx.send(f"Unloaded extension {extension}")
@@ -86,4 +86,4 @@ class Main(commands.Cog):
             print(error)
 
 def setup(bot):
-    bot.add_cog(Main(bot))
+    bot.add_cog(Extensions(bot))
