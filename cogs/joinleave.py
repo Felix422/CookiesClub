@@ -9,7 +9,6 @@ class JoinLeave(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
-        print(f"{member} joined {member.guild.name}")
         channel = discord.utils.get(member.guild.text_channels, name="member_logs")
         embed = discord.Embed(description=f"{member.mention} {member.name}#{member.discriminator} ", colour=discord.Color.green(), timestamp=datetime.utcnow())
         embed.set_thumbnail(url=member.avatar_url)
@@ -23,7 +22,6 @@ class JoinLeave(commands.Cog):
         async for entry in member.guild.audit_logs(limit=1):
             if entry.action == discord.AuditLogAction.ban and entry.target == member:
                 return
-        print(f"{member} left {member.guild.name}")
         channel = discord.utils.get(member.guild.text_channels, name="member_logs")
         embed = discord.Embed(description=f"{member.mention} {member.name}#{member.discriminator} ", colour=discord.Color.red(), timestamp=datetime.utcnow())
         embed.set_thumbnail(url=member.avatar_url)
