@@ -68,5 +68,10 @@ class Info(commands.Cog):
         else:
             await ctx.send("Something broke, contact Felix422")
 
+    @commands.command()
+    async def ping(self, ctx):
+        await ctx.send(f"Pong! `{round(self.bot.latency * 1000)}ms`")
+        print(f"Ping is {round(self.bot.latency * 1000)}ms")
+
 def setup(bot):
     bot.add_cog(Info(bot))
