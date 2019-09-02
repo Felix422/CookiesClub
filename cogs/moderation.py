@@ -90,6 +90,7 @@ class Moderation(commands.Cog):
         else:
             await ctx.send("Something broke, contact Felix422")
             print(error)
+            
     @commands.command()
     @commands.has_role('Staff')
     async def resetnick(self, ctx, member:discord.Member):
