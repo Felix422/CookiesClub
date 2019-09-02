@@ -1,4 +1,5 @@
 import discord, timeago
+from collections import deque
 from datetime import datetime
 from discord.ext import commands
 
@@ -6,6 +7,7 @@ class Action_log(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+        self.vclogs = deque([], 10)
 
     @commands.Cog.listener()
     async def on_message_delete(self, message):
@@ -72,6 +74,44 @@ class Action_log(commands.Cog):
         e.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
         await channel.send(embed=e)
 
+    @commands.Cog.listener()
+    async def on_voice_state_update(self, member, vc_before, vc_after):
+        if vc_before.channel != vc_after.channel:
+            if vc_after.channel:
+                time = datetime.now().strftime("%a, %I:%M%p")
+                self.vclogs.append(f"{datetime.now().strftime('%a, %I:%M%p')}: {member} joined channel {vc_after.channel.name}")
+            elif not vc_after.channel:
+                self.vclogs.append(f"{datetime.now().strftime('%a, %I:%M%p')}: {member} left channel {vc_before.channel.name}")
+
+    @commands.command(aliases=["vclog"])
+    @commands.has_role("Staff")
+    async def vclogs(self, ctx):
+        logmessage = ""
+        for log in self.vclogs:
+            logmessage = logmessage + log + "\n"
+        await ctx.send(f"```{logmessage}```")
+
+    @commands.Cog.listener()
+    async def on_guild_role_create(self, role):
+        channel = discord.utils.get(role.guild.text_channels, name="action_log")
+        async for entry in channel.guild.audit_logs(limit=1):
+            role_creator = entry.user
+        e = discord.Embed(description=f"**New role created by {role_creator.mention}**\n{role.name}", color=discord.Color.green(), timestamp=datetime.utcnow())
+        e.set_author(name=channel.guild.name, icon_url=channel.guild.icon_url)
+        await channel.send(embed=e)
+
+    @commands.Cog.listener()
+    async def on_guild_role_delete(self, role):
+        channel = discord.utils.get(role.guild.text_channels, name="action_log")
+        async for entry in channel.guild.audit_logs(limit=1):
+            role_creator = entry.user
+        e = discord.Embed(description=f"**Role deleted by {role_creator.mention}**\n{role.name}", color=discord.Color.green(), timestamp=datetime.utcnow())
+        e.set_author(name=channel.guild.name, icon_url=channel.guild.icon_url)
+        await channel.send(embed=e)
+
+    @commands.Cog.listener()
+    async def on_guild_role_update(self, role_before, role_after):
+        return
 
 def setup(bot):
     bot.add_cog(Action_log(bot))
