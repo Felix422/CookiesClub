@@ -114,9 +114,15 @@ class Action_log(commands.Cog):
     @commands.Cog.listener()
     async def on_guild_role_update(self, role_before, role_after):
         channel = discord.utils.get(role_before.guild.text_channels, name="action_log")
-        e = discord.Embed(title="Role updated", color=discord.Color.blurple(), timestamp=datetime.utcnow())
+        e = discord.Embed(title=f"Updated role {role_before.name}", color=discord.Color.blurple(), timestamp=datetime.utcnow())
         perms = set(role_after.permissions) - set(role_before.permissions)
         e.set_footer(text=f"ID: {role_before.id}")
+        if role_before == role_before.guild.default_role:
+            if not perms:
+                return
+            else:
+                for name, value in perms:
+                    e.add_field(name=f"{name}", value=f"Set {name} to {value}", inline=False)
         if role_before.name != role_after.name:
             e.add_field(name="Changed Name", value=f"Changed name from {role_before.name} to {role_after.name}")
         for name, value in perms:
