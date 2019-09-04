@@ -8,7 +8,10 @@ logging.basicConfig(level=logging.ERROR)
 class Bot(commands.Bot):
 
     def __init__(self):
-        super().__init__(command_prefix=COMMAND_PREFIX)
+        super().__init__(
+        command_prefix=COMMAND_PREFIX,
+        case_insensitive=True
+        )
         self.remove_command("help")
 
     async def on_connect(self):
