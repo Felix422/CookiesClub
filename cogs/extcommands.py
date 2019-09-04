@@ -7,7 +7,7 @@ class Extensions(commands.Cog):
         self.bot = bot
 
     @commands.command()
-    @commands.has_role('Staff')
+    @commands.is_owner()
     async def load(self, ctx, extension):
         self.bot.load_extension(f"cogs.{extension}")
         print(f"Loaded cog {extension}")
@@ -22,7 +22,7 @@ class Extensions(commands.Cog):
         elif isinstance(error, discord.ext.commands.errors.ExtensionNotFound):
             await ctx.send("Extension not found")
             return
-        elif isinstance(error, discord.ext.commands.errors.MissingRole):
+        elif isinstance(error, discord.ext.commands.errors.NotOwner):
             await ctx.send("You dont have permission for this")
             return
         else:
@@ -30,7 +30,7 @@ class Extensions(commands.Cog):
             print(error)
 
     @commands.command()
-    @commands.has_role('Staff')
+    @commands.is_owner()
     async def unload(self, ctx, extension):
         if extension == "extcommands":
             await ctx.send("You cant unload this!")
@@ -46,7 +46,7 @@ class Extensions(commands.Cog):
             return
         elif isinstance(error, discord.ext.commands.errors.ExtensionNotLoaded):
             await ctx.send("Extension not loaded")
-        elif isinstance(error, discord.ext.commands.errors.MissingRole):
+        elif isinstance(error, discord.ext.commands.errors.NotOwner):
             await ctx.send("You dont have permission for this")
             return
         else:
@@ -54,7 +54,7 @@ class Extensions(commands.Cog):
             print(error)
 
     @commands.command()
-    @commands.has_role('Staff')
+    @commands.is_owner()
     async def reload(self, ctx, extension):
         if extension == "all":
             print(f"reloading all Cogs")
@@ -78,7 +78,7 @@ class Extensions(commands.Cog):
         elif isinstance(error, discord.ext.commands.errors.ExtensionNotLoaded):
             await ctx.send("Extension not loaded")
             return
-        elif isinstance(error, discord.ext.commands.errors.MissingRole):
+        elif isinstance(error, discord.ext.commands.errors.NotOwner):
             await ctx.send("You dont have permission for this")
             return
         else:
