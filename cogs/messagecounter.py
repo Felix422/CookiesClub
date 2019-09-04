@@ -19,7 +19,7 @@ class MessageCounter(commands.Cog):
                 await message.channel.send(COUNTER_MESSAGES[index].format(message.author.mention))
                 print(f"Sent counter message")
                 self.message_counter = 0
-                self.messages_required = random.randint(200, 300)
+                self.messages_required = random(200, 300)
                 print(f"New message requirement is {self.messages_required}")
 
     @commands.command()
@@ -30,7 +30,7 @@ class MessageCounter(commands.Cog):
     @commands.command()
     @commands.has_role("Staff")
     async def countertest(self, ctx):
-        await ctx.channel.send(COUNTER_MESSAGES[random.randint(0, len(COUNTER_MESSAGES) - 1)].format(ctx.author.mention))
+        await ctx.channel.send(COUNTER_MESSAGES[random(0, len(COUNTER_MESSAGES) - 1)].format(ctx.author.mention))
 
 
 def setup(bot):
