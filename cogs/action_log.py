@@ -96,7 +96,8 @@ class Action_log(commands.Cog):
         channel = discord.utils.get(role.guild.text_channels, name="action_log")
         async for entry in channel.guild.audit_logs(limit=1):
             role_creator = entry.user
-        e = discord.Embed(description=f"**New role created by {role_creator.mention}**\n{role.name}", color=discord.Color.green(), timestamp=datetime.utcnow())
+        e = discord.Embed(description=f"**New role created by {role_creator.mention}**\nName:{role.name}", color=discord.Color.green(), timestamp=datetime.utcnow())
+        e.set_footer(text=f"ID: {role.id}")
         e.set_author(name=channel.guild.name, icon_url=channel.guild.icon_url)
         await channel.send(embed=e)
 
@@ -106,12 +107,21 @@ class Action_log(commands.Cog):
         async for entry in channel.guild.audit_logs(limit=1):
             role_creator = entry.user
         e = discord.Embed(description=f"**Role deleted by {role_creator.mention}**\n{role.name}", color=discord.Color.green(), timestamp=datetime.utcnow())
+        e.set_footer(text=f"ID: {role.id}")
         e.set_author(name=channel.guild.name, icon_url=channel.guild.icon_url)
         await channel.send(embed=e)
 
     @commands.Cog.listener()
     async def on_guild_role_update(self, role_before, role_after):
-        return
+        channel = discord.utils.get(role_before.guild.text_channels, name="action_log")
+        e = discord.Embed(title="Role updated", color=discord.Color.blurple(), timestamp=datetime.utcnow())
+        perms = set(role_after.permissions) - set(role_before.permissions)
+        e.set_footer(text=f"ID: {role_before.id}")
+        if role_before.name != role_after.name:
+            e.add_field(name="Changed Name", value=f"Changed name from {role_before.name} to {role_after.name}")
+        for name, value in perms:
+            e.add_field(name=f"{name}", value=f"Set {name} to {value}", inline=False)
+        await channel.send(embed=e)
 
 def setup(bot):
     bot.add_cog(Action_log(bot))
