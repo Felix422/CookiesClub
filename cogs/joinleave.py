@@ -25,6 +25,7 @@ class JoinLeave(commands.Cog):
         channel = discord.utils.get(member.guild.text_channels, name="member_logs")
         embed = discord.Embed(description=f"{member.mention} {member.name}#{member.discriminator} ", colour=discord.Color.red(), timestamp=datetime.utcnow())
         embed.set_thumbnail(url=member.avatar_url)
+        embed.add_field(name="Joined:", value=f"Joined {timeago.format(member.joined_at, datetime.now())}")
         embed.set_footer(text=f"User ID:{member.id}")
         embed.set_author(name=f"{member.name} left the server", icon_url=member.avatar_url)
         await channel.send(embed=embed)
