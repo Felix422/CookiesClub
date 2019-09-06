@@ -32,7 +32,7 @@ class Showcase(commands.Cog):
                 return
             elif mysteryshowcase == 0:
                 if member.nick is not None:
-                    oldnick = re.search("^(.*?)(\(SC\s?#\s?[-?\d\+]*\)|)$", member.nick, re.IGNORECASE).group(1)
+                    oldnick = re.search("^(.*?)(\(SC\s?#\s?[-?\d\+\s?]*\)|)$", member.nick, re.IGNORECASE).group(1)
                     fullnick = f"{oldnick}(SC#{showcase})"
                     if len(fullnick) > 32:
                         await ctx.send("Name is too long!")
@@ -52,7 +52,7 @@ class Showcase(commands.Cog):
                     return
             else:
                 if member.nick is not None:
-                    oldnick = re.search("^(.*?)(\(SC\s?#\s?[-?\d\+]*\)|)$", member.nick, re.IGNORECASE).group(1)
+                    oldnick = re.search("^(.*?)(\(SC\s?#\s?[-?\d\+\s?]*\)|)$", member.nick, re.IGNORECASE).group(1)
                     fullnick = f"{oldnick}(SC#{showcase}+{mysteryshowcase})"
                     if len(fullnick) > 32:
                         await ctx.send("Nickname too long!")
@@ -73,7 +73,7 @@ class Showcase(commands.Cog):
         elif isinstance(showcase, str):
             if showcase == "clear":
                 if member.nick is not None:
-                    oldnick = re.search("^(.*?)(\(SC\s?#\s?[-?\d\+]*\)|)$", member.nick, re.IGNORECASE).group(1)
+                    oldnick = re.search("^(.*?)(\(SC\s?#\s?[-?\d\+\s?]*\)|)$", member.nick, re.IGNORECASE).group(1)
                     await member.edit(nick=oldnick)
                     return
                 else:
