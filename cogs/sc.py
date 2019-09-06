@@ -12,7 +12,6 @@ class Showcase(commands.Cog):
         if member == ctx.guild.owner:
             await ctx.send("I cant edit the server owner!")
             return
-        # await ctx.message.delete()
         if isinstance(showcase, int):
             if showcase < 0 or mysteryshowcase < 0:
                 await ctx.send("Sc count cant be negative!")
