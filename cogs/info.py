@@ -58,20 +58,21 @@ class Info(commands.Cog):
     async def acronyms_error(self, ctx, error):
         if isinstance(error, discord.ext.commands.errors.CommandOnCooldown):
             await ctx.send(f"Command on cooldown, try again in {round(error.retry_after)}s")
-        else:
-            await ctx.send("Something broke, contact Felix422")
 
     @help.error
     async def help_error(self, ctx, error):
         if isinstance(error, discord.ext.commands.errors.CommandOnCooldown):
             await ctx.send(f"Command on cooldown, try again in {round(error.retry_after)}s")
-        else:
-            await ctx.send("Something broke, contact Felix422")
 
     @commands.command()
     async def ping(self, ctx):
         await ctx.send(f"Pong! `{round(self.bot.latency * 1000)}ms`")
         print(f"Ping is {round(self.bot.latency * 1000)}ms")
+
+    @commands.command()
+    async def joinpos(self, ctx):
+        index = list(filter(lambda m: not m.bot, sorted(ctx.guild.members, key=lambda o: o.joined_at))).index(ctx.author)+1
+        await ctx.send(index)
 
 def setup(bot):
     bot.add_cog(Info(bot))
