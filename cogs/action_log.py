@@ -34,6 +34,8 @@ class Action_log(commands.Cog):
         channel = discord.utils.get(message_before.guild.text_channels, name="action_log")
         if message_before.author.bot is True:
             return
+        if message_before.content == message_after.content:
+            return
         e = discord.Embed(description=f"**Message edited in** <#{message_after.channel.id}> [Jump to message]({message_after.jump_url})", color=discord.Color.blurple(), timestamp=datetime.utcnow())
         try:
             e.add_field(name="Before", value=f"{message_before.content}", inline=False)
@@ -44,8 +46,8 @@ class Action_log(commands.Cog):
         except discord.HTTPException:
             return
 
-    @commands.Cog.listener()
-    async def on_member_update(self, member_before, member_after):
+    @commands.Cog.listener("on_member_update")
+    async def nick_logs(self, member_before, member_after):
         if member_after.nick != member_before.nick:
             channel = discord.utils.get(member_before.guild.text_channels, name="action_log")
             e = discord.Embed(description=f"**{member_after.mention} nickname changed**", color=discord.Color.blurple(), timestamp=datetime.utcnow())
@@ -54,6 +56,18 @@ class Action_log(commands.Cog):
             e.set_author(name=member_before, icon_url=member_before.avatar_url)
             e.set_footer(text=f"ID: {member_after.id}")
             await channel.send(embed=e)
+
+    @commands.Cog.listener("on_member_update")
+    async def role_logs(self, member_before, member_after):
+        if member_before.roles != member_after.roles:
+            new_role = set(member_after.roles) - set(member_before.roles)
+            removed_role = set(member_before.roles) - set(member_after.roles)
+            if new_role != set():
+                for role in new_role:
+                    print(f"new role is {role.name}")
+            if removed_role != set():
+                for role in removed_role:
+                    print(f"removed role is {role.name}")
 
     @commands.Cog.listener()
     async def on_bulk_message_delete(self, messages):
@@ -117,12 +131,8 @@ class Action_log(commands.Cog):
         e = discord.Embed(title=f"Updated role {role_before.name}", color=discord.Color.blurple(), timestamp=datetime.utcnow())
         perms = set(role_after.permissions) - set(role_before.permissions)
         e.set_footer(text=f"ID: {role_before.id}")
-        if role_before == role_before.guild.default_role:
-            if not perms:
-                return
-            else:
-                for name, value in perms:
-                    e.add_field(name=f"{name}", value=f"Set {name} to {value}", inline=False)
+        if role_before.permissions == role_after.permissions:
+            return
         if role_before.name != role_after.name:
             e.add_field(name="Changed Name", value=f"Changed name from {role_before.name} to {role_after.name}")
         for name, value in perms:
