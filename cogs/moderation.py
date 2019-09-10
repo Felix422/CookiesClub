@@ -1,4 +1,4 @@
-import discord
+import discord, traceback, sys
 from datetime import datetime
 from discord.ext import commands
 
@@ -69,7 +69,7 @@ class Moderation(commands.Cog):
         await ctx.guild.leave()
 
     @commands.command()
-    @commands.has_role('Staff')
+    @commands.has_role("Staff")
     async def setnick(self, ctx, member:discord.Member, *, nick):
         if member == ctx.guild.owner:
             await ctx.send("I can't edit the server owner!")
@@ -90,9 +90,9 @@ class Moderation(commands.Cog):
         else:
             await ctx.send("Something broke, contact Felix422")
             print(error)
-            
+
     @commands.command()
-    @commands.has_role('Staff')
+    @commands.has_role("Staff")
     async def resetnick(self, ctx, member:discord.Member):
         if member == ctx.guild.owner:
             await ctx.send("I can't edit the server owner!")
@@ -107,6 +107,50 @@ class Moderation(commands.Cog):
         else:
             await ctx.send("Something broke, contact Felix422")
             print(error)
+
+    @commands.command()
+    async def referralban(self, ctx, member:discord.Member):
+        role = discord.utils.get(ctx.guild.roles, name="Referral Banned")
+        if role == None:
+            await ctx.send("No role called \"Referral Banned\" found")
+            return
+        if role in member.roles:
+            await ctx.send("Member is already Referral Banned!")
+            return
+        await member.add_roles(role)
+        await ctx.send(f"Referral Banned {member.name}")
+
+    @referralban.error
+    async def referralban_error(self, ctx, error):
+        if isinstance(error, discord.ext.commands.errors.BadArgument):
+            await ctx.send("Member not found")
+        elif isinstance(error, discord.ext.commands.errors.MissingRole):
+            await ctx.send("You dont have permissions for this!")
+        else:
+            traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
+
+    @commands.command()
+    @commands.has_role("Staff")
+    async def teamshareban(self, ctx, member:discord.Member):
+        role = discord.utils.get(ctx.guild.roles, name="Team Share Banned")
+        if role == None:
+            await ctx.send("No role called \"Team Share Banned\" found")
+            return
+        if role in member.roles:
+            await ctx.send("Member is already Referral Banned!")
+            return
+        await member.add_roles(role)
+        await ctx.send(f"Team Share Banned {member.name}")
+
+    @teamshareban.error
+    async def teamshareban_error(self, ctx, error):
+        if isinstance(error, discord.ext.commands.errors.BadArgument):
+            await ctx.send("Member not found")
+        elif isinstance(error, discord.ext.commands.errors.MissingRole):
+            await ctx.send("You dont have permissions for this!")
+        else:
+            traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
+
 
 def setup(bot):
     bot.add_cog(Moderation(bot))
