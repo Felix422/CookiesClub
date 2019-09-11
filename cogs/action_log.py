@@ -11,7 +11,10 @@ class Action_log(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message_delete(self, message):
-        channel = discord.utils.get(message.guild.text_channels, name="action_log")
+        try:
+            channel = discord.utils.get(message.guild.text_channels, name="action_log")
+        except:
+            return
         if message.author.bot is True:
             return
         async for entry in message.guild.audit_logs(limit=1):
@@ -31,7 +34,10 @@ class Action_log(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message_edit(self, message_before, message_after):
-        channel = discord.utils.get(message_before.guild.text_channels, name="action_log")
+        try:
+            channel = discord.utils.get(message_before.guild.text_channels, name="action_log")
+        except:
+            return
         if message_before.author.bot is True:
             return
         if message_before.content == message_after.content:
@@ -49,7 +55,10 @@ class Action_log(commands.Cog):
     @commands.Cog.listener("on_member_update")
     async def nick_logs(self, member_before, member_after):
         if member_after.nick != member_before.nick:
-            channel = discord.utils.get(member_before.guild.text_channels, name="action_log")
+            try:
+                channel = discord.utils.get(member_before.guild.text_channels, name="action_log")
+            except:
+                return
             e = discord.Embed(description=f"**{member_after.mention} nickname changed**", color=discord.Color.blurple(), timestamp=datetime.utcnow())
             e.add_field(name="Before", value=member_before.nick)
             e.add_field(name="After", value=member_after.nick, inline=False)
@@ -71,19 +80,25 @@ class Action_log(commands.Cog):
 
     @commands.Cog.listener()
     async def on_bulk_message_delete(self, messages):
+        try:
             channel = discord.utils.get(messages[0].guild.text_channels, name="action_log")
-            if len(messages)-1 == 1:
-                e = discord.Embed(description=f"**Bulk deleted {len(messages) - 1} message in <#{messages[0].channel.id}>**", color=discord.Color.blurple(), timestamp=datetime.utcnow())
-            else:
-                e = discord.Embed(description=f"**Bulk deleted {len(messages) - 1} messages in <#{messages[0].channel.id}>**", color=discord.Color.blurple(), timestamp=datetime.utcnow())
-            e.set_author(name=messages[0].guild.name, icon_url=messages[0].guild.icon_url)
-            await channel.send(embed=e)
-            purge_channel = messages[0].channel
-            print(f"Purged {len(messages) - 1} messages in #{purge_channel} on {messages[0].guild.name}")
+        except:
+            return
+        if len(messages)-1 == 1:
+            e = discord.Embed(description=f"**Bulk deleted {len(messages) - 1} message in <#{messages[0].channel.id}>**", color=discord.Color.blurple(), timestamp=datetime.utcnow())
+        else:
+            e = discord.Embed(description=f"**Bulk deleted {len(messages) - 1} messages in <#{messages[0].channel.id}>**", color=discord.Color.blurple(), timestamp=datetime.utcnow())
+        e.set_author(name=messages[0].guild.name, icon_url=messages[0].guild.icon_url)
+        await channel.send(embed=e)
+        purge_channel = messages[0].channel
+        print(f"Purged {len(messages) - 1} messages in #{purge_channel} on {messages[0].guild.name}")
 
     @commands.Cog.listener()
     async def on_command(self, ctx):
-        channel = discord.utils.get(ctx.guild.text_channels, name="action_log")
+        try:
+            channel = discord.utils.get(ctx.guild.text_channels, name="action_log")
+        except:
+            return
         e = discord.Embed(description=f"Used `{ctx.command}` command in <#{ctx.channel.id}>\n{ctx.message.content}", color=discord.Color.blurple(), timestamp=datetime.utcnow())
         e.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
         await channel.send(embed=e)
@@ -107,7 +122,10 @@ class Action_log(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_role_create(self, role):
-        channel = discord.utils.get(role.guild.text_channels, name="action_log")
+        try:
+            channel = discord.utils.get(role.guild.text_channels, name="action_log")
+        except:
+            return
         async for entry in channel.guild.audit_logs(limit=1):
             role_creator = entry.user
         e = discord.Embed(description=f"**New role created by {role_creator.mention}**\nName:{role.name}", color=discord.Color.green(), timestamp=datetime.utcnow())
@@ -117,7 +135,10 @@ class Action_log(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_role_delete(self, role):
-        channel = discord.utils.get(role.guild.text_channels, name="action_log")
+        try:
+            channel = discord.utils.get(role.guild.text_channels, name="action_log")
+        except:
+            return
         async for entry in channel.guild.audit_logs(limit=1):
             role_creator = entry.user
         e = discord.Embed(description=f"**Role deleted by {role_creator.mention}**\n{role.name}", color=discord.Color.green(), timestamp=datetime.utcnow())
@@ -127,7 +148,10 @@ class Action_log(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_role_update(self, role_before, role_after):
-        channel = discord.utils.get(role_before.guild.text_channels, name="action_log")
+        try:
+            channel = discord.utils.get(role_before.guild.text_channels, name="action_log")
+        except:
+            return
         e = discord.Embed(title=f"Updated role {role_before.name}", color=discord.Color.blurple(), timestamp=datetime.utcnow())
         perms = set(role_after.permissions) - set(role_before.permissions)
         e.set_footer(text=f"ID: {role_before.id}")

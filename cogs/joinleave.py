@@ -9,7 +9,10 @@ class JoinLeave(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
-        channel = discord.utils.get(member.guild.text_channels, name="member_logs")
+        try:
+            channel = discord.utils.get(member.guild.text_channels, name="member_logs")
+        except:
+            return
         embed = discord.Embed(description=f"{member.mention} {member.name}#{member.discriminator} ", colour=discord.Color.green(), timestamp=datetime.utcnow())
         embed.set_thumbnail(url=member.avatar_url)
         embed.add_field(name="Account age", value=f"Created {timeago.format(member.created_at, datetime.now())}")
@@ -19,7 +22,10 @@ class JoinLeave(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_remove(self, member):
-        channel = discord.utils.get(member.guild.text_channels, name="member_logs")
+        try:
+            channel = discord.utils.get(member.guild.text_channels, name="member_logs")
+        except:
+            return
         embed = discord.Embed(description=f"{member.mention} {member.name}#{member.discriminator} ", colour=discord.Color.red(), timestamp=datetime.utcnow())
         async for entry in member.guild.audit_logs(limit=1):
             if entry.action == discord.AuditLogAction.ban and entry.target == member:
@@ -35,7 +41,9 @@ class JoinLeave(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_unban(self, guild, user):
-        channel = discord.utils.get(guild.text_channels, name="member_logs")
+        try:
+            channel = discord.utils.get(guild.text_channels, name="member_logs")
+        except:
         embed = discord.Embed(description=f"{user.name}#{user.discriminator} ", colour=discord.Color.green(), timestamp=datetime.utcnow())
         embed.set_thumbnail(url=user.avatar_url)
         embed.set_footer(text=f"User ID:{user.id}")
@@ -44,7 +52,10 @@ class JoinLeave(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_ban(self, guild, user):
-        channel = discord.utils.get(guild.text_channels, name="member_logs")
+        try:
+            channel = discord.utils.get(guild.text_channels, name="member_logs")
+        except:
+            return
         embed = discord.Embed(description=f"{user.mention} {user.name}#{user.discriminator} ", colour=discord.Color.red(), timestamp=datetime.utcnow())
         embed.set_thumbnail(url=user.avatar_url)
         async for entry in guild.audit_logs(limit=1):
