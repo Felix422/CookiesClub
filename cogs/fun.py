@@ -1,4 +1,4 @@
-import discord, random
+import discord, random, traceback, sys
 from discord.ext import commands
 
 class Fun(commands.Cog):
@@ -9,21 +9,18 @@ class Fun(commands.Cog):
     @commands.command(aliases=["noddleslap"])
     @commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
     async def noodleslap(self, ctx, member:discord.Member):
+        invoked = "noodles" if ctx.invoked_with == "noodleslap" else "noddles"
         if member.id == 285738922519035904:
-            await ctx.send(f"*Slaps {ctx.author.name} with noddles*")
-            print(f"{ctx.author.name} tried slapping Felix!")
+            await ctx.send(f"*Slaps {ctx.author.name} with {invoked}*")
             return
         elif member == self.bot.user:
             await ctx.send(":(")
-            print(f"{ctx.author.name} tried slapping the bot!")
             return
         elif member == ctx.author:
             await ctx.send("You can't slap yourself!")
-            print(f"{ctx.author.name} tried slapping themself")
             return
         else:
-            await ctx.send(f"*Slaps {member.name} with noddles*")
-            print(f"Slapped {member.name} with noodles")
+            await ctx.send(f"*Slaps {member.name} with {invoked}*")
 
     @commands.command()
     @commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
@@ -47,6 +44,7 @@ class Fun(commands.Cog):
             await ctx.send(embed=e)
             return
         else:
+            traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
             await ctx.send("Something broke, contact Felix422")
             return
 
