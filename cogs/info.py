@@ -1,4 +1,4 @@
-import discord
+import discord, unicodedata
 from discord.ext import commands
 
 class Info(commands.Cog):
@@ -73,6 +73,17 @@ class Info(commands.Cog):
     async def joinpos(self, ctx):
         index = list(filter(lambda m: not m.bot, sorted(ctx.guild.members, key=lambda o: o.joined_at))).index(ctx.author)+1
         await ctx.send(index)
+
+    @commands.command()
+    async def charinfo(self, ctx, *, characters: str):
+        def to_string(c):
+            digit = f'{ord(c):x}'
+            name = unicodedata.name(c, 'Name not found.')
+            return f'`\\U{digit:>08}`: {name} - {c} \N{EM DASH} <http://www.fileformat.info/info/unicode/char/{digit}>'
+        msg = '\n'.join(map(to_string, characters))
+        if len(msg) > 2000:
+            return await ctx.send('Output too long to display.')
+        await ctx.send(msg)
 
 def setup(bot):
     bot.add_cog(Info(bot))
