@@ -29,8 +29,6 @@ class Warn(commands.Cog):
             warns[str(ctx.guild.id)] = {}
         if str(member.id) not in warns[str(ctx.guild.id)]:
             warns[str(ctx.guild.id)][str(member.id)] = {"warns": []}
-        if "warns" not in warns[str(ctx.guild.id)][str(member.id)]:
-            warns[str(ctx.guild.id)][str(member.id)]["warns"] = []
         warns[str(ctx.guild.id)][str(member.id)]["warns"].append(reason)
         with open("warns.json", "w") as f:
             json.dump(warns, f, indent=4, sort_keys=True)
@@ -61,7 +59,7 @@ class Warn(commands.Cog):
         with open("warns.json", "r") as f:
             warns = json.load(f)
         try:
-            warns[str(ctx.guild.id)][str(member.id)]["warns"] = []
+            warns[str(ctx.guild.id)].pop(str(member.id))
             with open("warns.json", "w") as f:
                 json.dump(warns, f, indent=4, sort_keys=True)
             await ctx.send(f"Cleared warns for {member.name}")
