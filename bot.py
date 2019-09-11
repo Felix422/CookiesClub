@@ -14,9 +14,9 @@ class Bot(commands.Bot):
     def __init__(self):
         super().__init__(
         command_prefix=COMMAND_PREFIX,
-        case_insensitive=True
+        case_insensitive=True,
+        help_command=None
         )
-        self.remove_command("help")
 
     async def on_connect(self):
         print("Connected to discord")
