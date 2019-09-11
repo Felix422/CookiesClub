@@ -44,6 +44,7 @@ class JoinLeave(commands.Cog):
         try:
             channel = discord.utils.get(guild.text_channels, name="member_logs")
         except:
+            return
         embed = discord.Embed(description=f"{user.name}#{user.discriminator} ", colour=discord.Color.green(), timestamp=datetime.utcnow())
         embed.set_thumbnail(url=user.avatar_url)
         embed.set_footer(text=f"User ID:{user.id}")
