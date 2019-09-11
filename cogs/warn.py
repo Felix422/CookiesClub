@@ -1,4 +1,4 @@
-import discord, json
+import discord, json, traceback, sys
 from discord.ext import commands
 
 
@@ -34,6 +34,13 @@ class Warn(commands.Cog):
             json.dump(warns, f, indent=4, sort_keys=True)
         await ctx.send(f"Warned user {member.name} with reason {reason}")
 
+    @warn.error
+    async def warn_error(self, ctx, error):
+        if isinstance(error, discord.ext.commands.errors.MissingRole):
+            await ctx.send("You don't have permission for this")
+        else:
+            traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
+
     @commands.command()
     @commands.has_role("Staff")
     async def warns(self, ctx, member:discord.Member=None):
@@ -50,6 +57,13 @@ class Warn(commands.Cog):
         except KeyError:
             await ctx.send("User has no warns")
 
+    @warns.error
+    async def warns_error(self, ctx, error):
+        if isinstance(error, discord.ext.commands.errors.MissingRole):
+            await ctx.send("You don't have permission for this")
+        else:
+            traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
+
     @commands.command()
     @commands.has_role("Staff")
     async def clearwarns(self, ctx, member:discord.Member=None):
@@ -65,6 +79,13 @@ class Warn(commands.Cog):
             await ctx.send(f"Cleared warns for {member.name}")
         except KeyError:
             await ctx.send("User doesnt have any warns")
+
+    @clearwarns.error
+    async def clearwarns_error(self, ctx, error):
+        if isinstance(error, discord.ext.commands.errors.MissingRole):
+            await ctx.send("You don't have permission for this")
+        else:
+            traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
 
 
 
