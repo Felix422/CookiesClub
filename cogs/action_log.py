@@ -94,7 +94,7 @@ class Action_log(commands.Cog):
         print(f"Purged {len(messages) - 1} messages in #{purge_channel} on {messages[0].guild.name}")
 
     @commands.Cog.listener()
-    async def on_command(self, ctx):
+    async def on_command_completion(self, ctx):
         try:
             channel = discord.utils.get(ctx.guild.text_channels, name="action_log")
         except:
