@@ -9,9 +9,8 @@ class JoinLeave(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
-        try:
-            channel = discord.utils.get(member.guild.text_channels, name="member_logs")
-        except:
+        channel = discord.utils.get(member.guild.text_channels, name="member_logs")
+        if channel is None:
             return
         embed = discord.Embed(description=f"{member.mention} {member.name}#{member.discriminator} ", colour=discord.Color.green(), timestamp=datetime.utcnow())
         embed.set_thumbnail(url=member.avatar_url)
@@ -22,9 +21,8 @@ class JoinLeave(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_remove(self, member):
-        try:
-            channel = discord.utils.get(member.guild.text_channels, name="member_logs")
-        except:
+        channel = discord.utils.get(member.guild.text_channels, name="member_logs")
+        if channel is None:
             return
         embed = discord.Embed(description=f"{member.mention} {member.name}#{member.discriminator} ", colour=discord.Color.red(), timestamp=datetime.utcnow())
         async for entry in member.guild.audit_logs(limit=1):
@@ -41,9 +39,8 @@ class JoinLeave(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_unban(self, guild, user):
-        try:
-            channel = discord.utils.get(guild.text_channels, name="member_logs")
-        except:
+        channel = discord.utils.get(guild.text_channels, name="member_logs")
+        if channel is None:
             return
         embed = discord.Embed(description=f"{user.name}#{user.discriminator} ", colour=discord.Color.green(), timestamp=datetime.utcnow())
         embed.set_thumbnail(url=user.avatar_url)
@@ -53,9 +50,8 @@ class JoinLeave(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_ban(self, guild, user):
-        try:
-            channel = discord.utils.get(guild.text_channels, name="member_logs")
-        except:
+        channel = discord.utils.get(guild.text_channels, name="member_logs")
+        if channel is None:
             return
         embed = discord.Embed(description=f"{user.mention} {user.name}#{user.discriminator} ", colour=discord.Color.red(), timestamp=datetime.utcnow())
         embed.set_thumbnail(url=user.avatar_url)
