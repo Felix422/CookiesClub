@@ -1,9 +1,22 @@
 import discord, unicodedata
+import io
+import textwrap
+import traceback
+from contextlib import redirect_stdout
+from pprint import pprint
+from tabulate import tabulate
 from discord.ext import commands
 
 class Info(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+
+    def cleanup_code(self, content):
+        '''Automatically removes code blocks from the code.'''
+        # remove ```py\n```
+        if content.startswith('```') and content.endswith('```'):
+            return '\n'.join(content.split('\n')[1:-1])
+        return content.strip('` \n')
 
     @commands.command()
     @commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
@@ -84,6 +97,50 @@ class Info(commands.Cog):
         if len(msg) > 2000:
             return await ctx.send('Output too long to display.')
         await ctx.send(msg)
+
+    @commands.command()
+    @commands.is_owner()
+    async def eval(self, ctx, *, body: str):
+        '''Evaluates some code.'''
+        env = {
+            'discord': discord,
+            'bot': self.bot,
+            'ctx': ctx,
+            'channel': ctx.channel,
+            'author': ctx.author,
+            'guild': ctx.guild,
+            'message': ctx.message,
+            'pprint': pprint,
+            'tabulate': tabulate,
+        }
+        env.update(globals())
+        body = self.cleanup_code(body)
+        stdout = io.StringIO()
+        to_compile = f'async def func():\n{textwrap.indent(body, "  ")}'
+        try:
+        	exec(to_compile, env)
+        except Exception as e:
+        	return await ctx.send(f'```py\n{e.__class__.__name__}: {e}\n```')
+        func = env['func']
+        try:
+            with redirect_stdout(stdout):
+                ret = await func()
+        except Exception as e:
+            value = stdout.getvalue()
+            await ctx.send(f'```py\n{value}{traceback.format_exc()}\n```')
+        else:
+            value = stdout.getvalue()
+        try:
+            await ctx.message.add_reaction('\u2705')
+        except:
+            pass
+        if ret is None:
+            if value:
+                if len(value) > 1994:
+                    fp = io.BytesIO(value.encode('utf-8'))
+                    await ctx.send('Log too large...', file=discord.File(fp, 'results.txt'))
+        else:
+            await ctx.send(f'```py\n{value}\n```')
 
 def setup(bot):
     bot.add_cog(Info(bot))
