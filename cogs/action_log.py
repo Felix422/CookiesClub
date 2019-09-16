@@ -65,15 +65,26 @@ class Action_log(commands.Cog):
 
     @commands.Cog.listener("on_member_update")
     async def role_logs(self, member_before, member_after):
+        channel = discord.utils.get(member_before.guild.text_channels, name="action_log")
+        if channel is None:
+            return
         if member_before.roles != member_after.roles:
             new_role = set(member_after.roles) - set(member_before.roles)
             removed_role = set(member_before.roles) - set(member_after.roles)
             if new_role != set():
                 for role in new_role:
-                    print(f"new role is {role.name}")
+                    e = discord.Embed(description=f"Added roles to {member_before.name}", color=role.color, timestamp=datetime.utcnow())
+                    e.add_field(name=f"Added roles:", value=f"`{role.name}`")
+                    e.set_author(name=member_before, icon_url=member_before.avatar_url)
+                    e.set_footer(text=f"ID: {member_before.id}")
+                    await channel.send(embed=e)
             if removed_role != set():
                 for role in removed_role:
-                    print(f"removed role is {role.name}")
+                    e = discord.Embed(description=f"Removed roles from {member_before.name}", color=role.color, timestamp=datetime.utcnow())
+                    e.add_field(name=f"Removed roles:", value=f"`{role.name}`")
+                    e.set_author(name=member_before, icon_url=member_before.avatar_url)
+                    e.set_footer(text=f"ID: {member_before.id}")
+                    await channel.send(embed=e)
 
     @commands.Cog.listener()
     async def on_bulk_message_delete(self, messages):
