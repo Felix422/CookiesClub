@@ -121,10 +121,7 @@ class Action_log(commands.Cog):
     @commands.command(aliases=["vclog"])
     @commands.has_role("Staff")
     async def vclogs(self, ctx):
-        logmessage = ""
-        for log in self.vclogs:
-            logmessage = logmessage + log + "\n"
-        await ctx.send(f"```{logmessage}```")
+        await ctx.send("```" + '\n'.join(self.vclogs) + "```")
 
     @commands.Cog.listener()
     async def on_guild_role_create(self, role):
