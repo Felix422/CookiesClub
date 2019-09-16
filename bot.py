@@ -28,7 +28,7 @@ class Bot(commands.Bot):
             extensions += 1
             self.load_extension(f"cogs.{cog_name}")
         print(f"Loaded {extensions} extensions")
-        print("Initializing aiohttp")
+        print("Initializing aiohttp session")
         self.aiohttp = aiohttp.ClientSession(
             loop=self.loop,
             timeout=aiohttp.ClientTimeout(total=5)
