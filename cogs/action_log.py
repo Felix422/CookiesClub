@@ -10,7 +10,7 @@ class Action_log(commands.Cog):
         self.vclogs = deque([], 10)
 
     @commands.Cog.listener()
-    async def on_message_delete(self, raw_message):
+    async def on_message_delete(self, message):
         channel = discord.utils.get(message.guild.text_channels, name="action_log")
         if channel is None: return
         if message.author.bot: return
