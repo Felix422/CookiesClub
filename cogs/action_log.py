@@ -10,26 +10,14 @@ class Action_log(commands.Cog):
         self.vclogs = deque([], 10)
 
     @commands.Cog.listener()
-    async def on_message_delete(self, message):
+    async def on_message_delete(self, raw_message):
         channel = discord.utils.get(message.guild.text_channels, name="action_log")
-        if channel is None:
-            return
-        if message.author.bot is True:
-            return
-        async for entry in message.guild.audit_logs(limit=1):
-            if entry.user == self.bot.user:
-                return
-            if entry.action == discord.AuditLogAction.message_delete and entry.target == message.author:
-                message_deleter = entry.user
-                e = discord.Embed(description=f"**{message_deleter} deleted message from {message.author} in <#{message.channel.id}>**\n{message.content}", color=discord.Color.red(), timestamp=datetime.utcnow())
-                e.set_author(name=message.author, icon_url=message.author.avatar_url)
-                e.set_footer(text=f"Author: {message.author.id} | Message ID: {message.id}")
-                await channel.send(embed=e)
-            else:
-                e = discord.Embed(description=f"**{message.author} deleted a message in <#{message.channel.id}>**\n{message.content}", color=discord.Color.red(), timestamp=datetime.utcnow())
-                e.set_author(name=message.author, icon_url=message.author.avatar_url)
-                e.set_footer(text=f"Author: {message.author.id} | Message ID: {message.id}")
-                await channel.send(embed=e)
+        if channel is None: return
+        if message.author.bot: return
+        e = discord.Embed(description=f"**message sent by {message.author.mention} deleted in <#{message.channel.id}>**\n{message.content}", color=discord.Color.red(), timestamp=datetime.utcnow())
+        e.set_author(name=message.author, icon_url=message.author.avatar_url)
+        e.set_footer(text=f"Author: {message.author.id} | Message ID: {message.id}")
+        await channel.send(embed=e)
 
     @commands.Cog.listener()
     async def on_message_edit(self, message_before, message_after):
