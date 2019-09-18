@@ -132,5 +132,16 @@ class Info(commands.Cog):
         else:
             await ctx.send(f"```py\n{value}\n```")
 
+    @commands.command(aliases = ["ub", "urabndictionary", "udictionary", "udefine", "urban"])
+    async def define(self, ctx, *args):
+        baseurl = "https://www.urbandictionary.com/define.php?term="
+        output = ""
+        for word in args:
+            output += word
+            output += "%20"
+        output = re.sub("\s","",(output.lower()))[:-3]
+        await ctx.send(baseurl + output)
+
+
 def setup(bot):
     bot.add_cog(Info(bot))
