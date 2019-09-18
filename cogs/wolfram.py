@@ -55,14 +55,5 @@ class Wolfram(commands.Cog):
         print("Queried Wolfram")
         await ctx.send(embed=embed)
 
-    @wolfram.error
-    async def wolfram_error(self, ctx, error):
-        if isinstance(error, discord.ext.commands.CommandOnCooldown):
-            await ctx.send(f"Command on cooldown, try again in {round(error.retry_after)}s")
-            return
-        else:
-            await ctx.send("Query error")
-            return
-
 def setup(bot):
     bot.add_cog(Wolfram(bot))

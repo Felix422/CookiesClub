@@ -67,16 +67,6 @@ class Info(commands.Cog):
         e.add_field(name="Acronyms", value="SC = Showcase\nMSC = Mystery showcase\nCC = Cupcakes\nRC = Rainbow cookies\nDC = Dark cookies\nLC = Light cookies\nIG = Intergalactic baker")
         await ctx.send(embed=e)
 
-    @acronyms.error
-    async def acronyms_error(self, ctx, error):
-        if isinstance(error, discord.ext.commands.errors.CommandOnCooldown):
-            await ctx.send(f"Command on cooldown, try again in {round(error.retry_after)}s")
-
-    @help.error
-    async def help_error(self, ctx, error):
-        if isinstance(error, discord.ext.commands.errors.CommandOnCooldown):
-            await ctx.send(f"Command on cooldown, try again in {round(error.retry_after)}s")
-
     @commands.command()
     async def ping(self, ctx):
         await ctx.send(f"Pong! `{round(self.bot.latency * 1000)}ms`")

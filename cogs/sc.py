@@ -9,9 +9,6 @@ class Showcase(commands.Cog):
     @commands.cooldown(rate=2, per=10.0, type=commands.BucketType.user)
     async def showcase(self, ctx, showcase:typing.Union[int, str]=0, mysteryshowcase=0):
         member = ctx.author
-        if member == ctx.guild.owner:
-            await ctx.send("I cant edit the server owner!")
-            return
         if isinstance(showcase, int):
             if showcase < 0 or mysteryshowcase < 0:
                 await ctx.send("Sc count cant be negative!")
@@ -77,15 +74,6 @@ class Showcase(commands.Cog):
                     return
                 else:
                     return
-
-
-    @showcase.error
-    async def sc_error(self, ctx, error):
-        if isinstance(error, discord.ext.commands.CommandOnCooldown):
-            await ctx.send(f"Command on cooldown, try again in {round(error.retry_after)}s")
-        else:
-            print(error)
-            await ctx.send(error)
 
 def setup(bot):
     bot.add_cog(Showcase(bot))

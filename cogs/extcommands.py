@@ -13,22 +13,6 @@ class Extensions(commands.Cog):
         print(f"Loaded cog {extension}")
         await ctx.send(f"Loaded extension {extension}")
 
-    @load.error
-    async def load_error(self, ctx, error):
-        error = getattr(error, "original", error)
-        if isinstance(error, discord.ext.commands.errors.ExtensionAlreadyLoaded):
-            await ctx.send("Extension already loaded")
-            return
-        elif isinstance(error, discord.ext.commands.errors.ExtensionNotFound):
-            await ctx.send("Extension not found")
-            return
-        elif isinstance(error, discord.ext.commands.errors.NotOwner):
-            await ctx.send("You dont have permission for this")
-            return
-        else:
-            await ctx.send("Something broke, contact Felix422")
-            print(error)
-
     @commands.command()
     @commands.is_owner()
     async def unload(self, ctx, extension):
@@ -37,21 +21,6 @@ class Extensions(commands.Cog):
         self.bot.unload_extension(f"cogs.{extension}")
         print(f"Unloaded cog {extension}")
         await ctx.send(f"Unloaded extension {extension}")
-
-    @unload.error
-    async def unload_error(self, ctx, error):
-        error = getattr(error, "original", error)
-        if isinstance(error, discord.ext.commands.errors.ExtensionNotFound):
-            await ctx.send("Extension not found")
-            return
-        elif isinstance(error, discord.ext.commands.errors.ExtensionNotLoaded):
-            await ctx.send("Extension not loaded")
-        elif isinstance(error, discord.ext.commands.errors.NotOwner):
-            await ctx.send("You dont have permission for this")
-            return
-        else:
-            await ctx.send("Something broke, contact Felix422")
-            print(error)
 
     @commands.command()
     @commands.is_owner()
@@ -68,22 +37,6 @@ class Extensions(commands.Cog):
         self.bot.load_extension(f"cogs.{extension}")
         print(f"Reloaded cog {extension}")
         await ctx.send(f"Reloaded extension {extension}")
-
-    @reload.error
-    async def reload_error(self, ctx, error):
-        error = getattr(error, "original", error)
-        if isinstance(error, discord.ext.commands.errors.ExtensionNotFound):
-            await ctx.send("Extension not found")
-            return
-        elif isinstance(error, discord.ext.commands.errors.ExtensionNotLoaded):
-            await ctx.send("Extension not loaded")
-            return
-        elif isinstance(error, discord.ext.commands.errors.NotOwner):
-            await ctx.send("You dont have permission for this")
-            return
-        else:
-            await ctx.send("Something broke, contact Felix422")
-            print(error)
 
 def setup(bot):
     bot.add_cog(Extensions(bot))

@@ -28,30 +28,5 @@ class Fun(commands.Cog):
         await ctx.message.delete()
         await ctx.send("<a:nitroflex:592025304105615371>")
 
-    @noodleslap.error
-    async def noodleslap_error(self, ctx, error):
-        if isinstance(error, discord.ext.commands.errors.CommandOnCooldown):
-            await ctx.send(f"Command on cooldown, try again in {round(error.retry_after)}s")
-            return
-        elif isinstance(error, discord.ext.commands.errors.BadArgument):
-            await ctx.send("Bad argument")
-            return
-        elif isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-            e = discord.Embed(colour=discord.Color.green())
-            e.set_author(name="Noodleslap")
-            e.add_field(name="Usage:", value=".noodleslap [user]")
-            e.add_field(name="Description:", value="Slaps someone with noddles", inline=False)
-            await ctx.send(embed=e)
-            return
-        else:
-            traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
-            await ctx.send("Something broke, contact Felix422")
-            return
-
-    @baguette.error
-    async def baguette_error(self, ctx, error):
-         if isinstance(error, discord.ext.commands.errors.CommandOnCooldown):
-             await ctx.send(f"Command on cooldown, try again in {round(error.retry_after)}s")
-
 def setup(bot):
     bot.add_cog(Fun(bot))

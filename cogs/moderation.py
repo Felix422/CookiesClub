@@ -52,21 +52,11 @@ class Moderation(commands.Cog):
         await member.ban(reason=reason)
         await ctx.send(f"Banned {member.mention}!")
 
-    @ban.error
-    async def ban_error(self, ctx, error):
-        if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-            await ctx.send("Who do you want to ban?")
-
     @commands.command()
     @commands.has_role("Staff")
     async def kick(self, ctx, member:discord.Member, *, reason=None):
         await member.kick(reason=reason)
         await ctx.send(f"Kicked {member.mention}")
-
-    @kick.error
-    async def Kicked_error(self, ctx, error):
-        if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-            await ctx.send("Who do you want to kick?")
 
     @commands.command()
     @commands.has_role("Staff")
@@ -85,33 +75,10 @@ class Moderation(commands.Cog):
                 await member.edit(nick=nick)
                 await ctx.send(f"Set nick for {member.name} to {nick}")
 
-    @setnick.error
-    async def setnick_error(self, ctx, error):
-        if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-            await ctx.send("Missing arguments")
-        elif isinstance(error, discord.ext.commands.errors.MissingRole):
-            await ctx.send("You don't have permission for this")
-            return
-        else:
-            await ctx.send("Something broke, contact Felix422")
-            print(error)
-
     @commands.command()
     @commands.has_role("Staff")
     async def resetnick(self, ctx, member:discord.Member):
-        if member == ctx.guild.owner:
-            await ctx.send("I can't edit the server owner!")
-            return
         await member.edit(nick=member.name)
-
-    @resetnick.error
-    async def resetnick_error(self, ctx, error):
-        if isinstance(error, discord.ext.commands.errors.MissingRole):
-            await ctx.send("You don't have permission for this")
-            return
-        else:
-            await ctx.send("Something broke, contact Felix422")
-            print(error)
 
     @commands.command()
     async def referralban(self, ctx, member:discord.Member):
@@ -124,15 +91,6 @@ class Moderation(commands.Cog):
             return
         await member.add_roles(role)
         await ctx.send(f"Referral Banned {member.name}")
-
-    @referralban.error
-    async def referralban_error(self, ctx, error):
-        if isinstance(error, discord.ext.commands.errors.BadArgument):
-            await ctx.send("Member not found")
-        elif isinstance(error, discord.ext.commands.errors.MissingRole):
-            await ctx.send("You dont have permissions for this!")
-        else:
-            traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
 
     @commands.command()
     @commands.has_role("Staff")
@@ -147,24 +105,9 @@ class Moderation(commands.Cog):
         await member.add_roles(role)
         await ctx.send(f"Team Share Banned {member.name}")
 
-    @teamshareban.error
-    async def teamshareban_error(self, ctx, error):
-        if isinstance(error, discord.ext.commands.errors.BadArgument):
-            await ctx.send("Member not found")
-        elif isinstance(error, discord.ext.commands.errors.MissingRole):
-            await ctx.send("You dont have permissions for this!")
-        else:
-            traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
-
     @commands.command()
     @commands.has_role("Staff")
-    async def warn(self, ctx, member:discord.Member=None, *, reason=None):
-        if member is None:
-            await ctx.send("No member specified")
-            return
-        if reason is None:
-            await ctx.send("No reason specified")
-            return
+    async def warn(self, ctx, member:discord.Member, *, reason=None):
         if member == ctx.author:
             await ctx.send("You cant warn yourself!")
             return
@@ -179,16 +122,9 @@ class Moderation(commands.Cog):
             json.dump(warns, f, indent=4, sort_keys=True)
         await ctx.send(f"Warned user {member.name} with reason {reason}")
 
-    @warn.error
-    async def warn_error(self, ctx, error):
-        if isinstance(error, discord.ext.commands.errors.MissingRole):
-            await ctx.send("You don't have permission for this")
-        else:
-            traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
-
     @commands.command()
     @commands.has_role("Staff")
-    async def warns(self, ctx, member:discord.Member=None):
+    async def warns(self, ctx, member:discord.Member):
         if member is None:
             await ctx.send("No member passed")
             return
@@ -202,16 +138,9 @@ class Moderation(commands.Cog):
         except KeyError:
             await ctx.send("User has no warns")
 
-    @warns.error
-    async def warns_error(self, ctx, error):
-        if isinstance(error, discord.ext.commands.errors.MissingRole):
-            await ctx.send("You don't have permission for this")
-        else:
-            traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
-
     @commands.command()
     @commands.has_role("Staff")
-    async def clearwarns(self, ctx, member:discord.Member=None):
+    async def clearwarns(self, ctx, member:discord.Member):
         if member is None:
             await ctx.send("No member passed")
             return
@@ -224,14 +153,6 @@ class Moderation(commands.Cog):
             await ctx.send(f"Cleared warns for {member.name}")
         except KeyError:
             await ctx.send("User doesnt have any warns")
-
-    @clearwarns.error
-    async def clearwarns_error(self, ctx, error):
-        if isinstance(error, discord.ext.commands.errors.MissingRole):
-            await ctx.send("You don't have permission for this")
-        else:
-            traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
-
 
 def setup(bot):
     bot.add_cog(Moderation(bot))
