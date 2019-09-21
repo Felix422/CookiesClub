@@ -1,5 +1,6 @@
 import discord
-import random
+from random import randint as random
+from random import choice
 from discord.ext import commands
 from config import COUNTER_MESSAGES
 
@@ -7,7 +8,7 @@ class MessageCounter(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-        self.messages_required = random.randint(200, 400)
+        self.messages_required = random(200, 400)
         self.message_counter = 0
 
     @commands.Cog.listener()
@@ -15,7 +16,7 @@ class MessageCounter(commands.Cog):
         if message.channel.name == "general":
             self.message_counter += 1
             if self.message_counter == self.messages_required:
-                await message.channel.send(random.choice(COUNTER_MESSAGES).format(message.author.mention))
+                await message.channel.send(choice(COUNTER_MESSAGES).format(message.author.mention))
                 print(f"Sent counter message")
                 self.message_counter = 0
                 self.messages_required = random(200, 300)
@@ -29,7 +30,7 @@ class MessageCounter(commands.Cog):
     @commands.command()
     @commands.has_role("Staff")
     async def countertest(self, ctx):
-        await ctx.channel.send(COUNTER_MESSAGES[random(0, len(COUNTER_MESSAGES) - 1)].format(ctx.author.mention))
+        await ctx.channel.send(choice(COUNTER_MESSAGES).format(ctx.author.mention))
 
 
 def setup(bot):
