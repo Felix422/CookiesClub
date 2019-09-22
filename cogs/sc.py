@@ -9,6 +9,7 @@ class Showcase(commands.Cog):
     @commands.cooldown(rate=2, per=10.0, type=commands.BucketType.user)
     async def showcase(self, ctx, showcase:typing.Union[int, str]=0, mysteryshowcase=0):
         member = ctx.author
+        current_name = member.display_name
         if isinstance(showcase, int):
             if showcase < 0 or mysteryshowcase < 0:
                 await ctx.send("Sc count cant be negative!")
@@ -35,7 +36,7 @@ class Showcase(commands.Cog):
                         return
                     await member.edit(nick=fullnick)
                     await ctx.send(f"Changed your nickname to {fullnick}")
-                    print(f"Changed nickname for {member.display_name} to {fullnick}")
+                    print(f"Changed nickname for {current_name} to {fullnick}")
                     return
                 else:
                     fullnick = f"{member.name}(SC#{showcase})"
@@ -44,7 +45,7 @@ class Showcase(commands.Cog):
                         return
                     await member.edit(nick=fullnick)
                     await ctx.send(f"Changed your nickname to {fullnick}")
-                    print(f"Changed nickname for {member.display_name} to {fullnick}")
+                    print(f"Changed nickname for {current_name} to {fullnick}")
                     return
             else:
                 if member.nick is not None:
@@ -55,7 +56,7 @@ class Showcase(commands.Cog):
                         return
                     await member.edit(nick=fullnick)
                     await ctx.send(f"Changed your nickname to {fullnick}")
-                    print(f"Changed nickname for {member.display_name} to {fullnick}")
+                    print(f"Changed nickname for {current_name} to {fullnick}")
                     return
                 else:
                     fullnick = f"{member.name}(SC#{showcase}+{mysteryshowcase})"
@@ -64,7 +65,7 @@ class Showcase(commands.Cog):
                         return
                     await member.edit(nick=fullnick)
                     await ctx.send(f"Changed your nickname to {fullnick}")
-                    print(f"Changed nickname for {member.display_name} to {fullnick}")
+                    print(f"Changed nickname for {current_name} to {fullnick}")
                     return
         elif isinstance(showcase, str):
             if showcase == "clear":
