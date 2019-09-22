@@ -79,10 +79,10 @@ class Action_log(commands.Cog):
         channel = discord.utils.get(messages[0].guild.text_channels, name="action_log")
         if channel is None:
             return
-        if len(messages)-1 == 1:
-            e = discord.Embed(description=f"**Bulk deleted {len(messages) - 1} message in <#{messages[0].channel.id}>**", color=discord.Color.blurple(), timestamp=datetime.utcnow())
+        if len(messages) == 1:
+            e = discord.Embed(description=f"**Bulk deleted {len(messages)} message in <#{messages[0].channel.id}>**", color=discord.Color.blurple(), timestamp=datetime.utcnow())
         else:
-            e = discord.Embed(description=f"**Bulk deleted {len(messages) - 1} messages in <#{messages[0].channel.id}>**", color=discord.Color.blurple(), timestamp=datetime.utcnow())
+            e = discord.Embed(description=f"**Bulk deleted {len(messages)} messages in <#{messages[0].channel.id}>**", color=discord.Color.blurple(), timestamp=datetime.utcnow())
         e.set_author(name=messages[0].guild.name, icon_url=messages[0].guild.icon_url)
         await channel.send(embed=e)
         purge_channel = messages[0].channel

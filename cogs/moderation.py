@@ -15,7 +15,8 @@ class Moderation(commands.Cog):
     @commands.command(aliases=["purge"])
     @commands.has_role("Staff")
     async def clear(self, ctx, amount : int = 1):
-        await ctx.channel.purge(limit=amount + 1)
+        await ctx.message.delete()
+        await ctx.channel.purge(limit=amount)
         if amount == 1:
             await ctx.send(f"Purged {amount} message", delete_after=10)
         else:
