@@ -155,6 +155,7 @@ class Info(commands.Cog):
         await ctx.send(baseurl + output)
 
     @commands.command()
+    @commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
     async def botinfo(self, ctx):
         e = discord.Embed(title="Bot info", description="General info about the bot", color=discord.Color.blurple())
         e.add_field(name=f"Versions:",value=f"""Raspbian Linux {platform.dist()[1]}
