@@ -160,8 +160,8 @@ class Info(commands.Cog):
         e.add_field(name=f"Versions:",value=f"""Raspbian Linux {platform.dist()[1]}
                     discord.py {discord.__version__}
                     Python {'.'.join([str(value) for value in sys.version_info[:3]])}""")
-        e.add_field(name="Uptime:", value=f"""Bot uptime:{str(subprocess.Popen(['ps', '-o', 'etime', '-p', str(os.getpid())], stdout=subprocess.PIPE, universal_newlines=True).communicate()[0][12::]).rstrip()}
-                    System uptime: {self.s_to_time(uptime.uptime())}""")
+        e.add_field(name="Uptime:", value=f"""System uptime: {self.s_to_time(uptime.uptime())}
+                    Bot uptime:{str(subprocess.Popen(['ps', '-o', 'etime', '-p', str(os.getpid())], stdout=subprocess.PIPE, universal_newlines=True).communicate()[0][12::]).rstrip()}""")
         await ctx.send(embed=e)
 
 def setup(bot):
