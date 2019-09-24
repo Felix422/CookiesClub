@@ -4,6 +4,12 @@ import io
 import textwrap
 import traceback
 import re
+import platform
+import sys
+import os
+import datetime
+import uptime
+import subprocess
 from contextlib import redirect_stdout
 from pprint import pprint
 from tabulate import tabulate
@@ -12,6 +18,12 @@ from discord.ext import commands
 class Info(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+
+    def s_to_time(self, seconds):
+        hours, remainder = divmod(int(seconds), 3600)
+        minutes, seconds = divmod(remainder, 60)
+        days, hours = divmod(hours, 24)
+        return f"{days}:{hours}:{minutes}:{seconds}"
 
     def cleanup_code(self, content):
         if content.startswith("```") and content.endswith("```"):
@@ -142,6 +154,15 @@ class Info(commands.Cog):
         output = re.sub("\s","",(output.lower()))[:-3]
         await ctx.send(baseurl + output)
 
+    @commands.command()
+    async def botinfo(self, ctx):
+        e = discord.Embed(title="Bot info", description="General info about the bot", color=discord.Color.blurple(), timestamp=datetime.datetime.utcnow())
+        e.add_field(name=f"Versions:",value=f"""Raspbian Linux {platform.dist()[1]}
+                    discord.py {discord.__version__}
+                    Python {'.'.join([str(value) for value in sys.version_info[:3]])}""")
+        e.add_field(name="Uptime:", value=f"""Bot uptime:{str(subprocess.Popen(['ps', '-o', 'etime', '-p', str(os.getpid())], stdout=subprocess.PIPE, universal_newlines=True).communicate()[0][12::]).rstrip()}
+                    System uptime:{self.s_to_time(uptime.uptime())}""")
+        await ctx.send(embed=e)
 
 def setup(bot):
     bot.add_cog(Info(bot))
