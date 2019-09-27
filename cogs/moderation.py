@@ -10,7 +10,7 @@ class Moderation(commands.Cog):
             with open("warns.json", "r") as f:
                 warns = json.load(f)
         except:
-            print("File \"warns.json\" not found")
+            print("File 'warns.json' not found")
 
     @commands.command(aliases=["purge"])
     @commands.has_role("Staff")
@@ -85,7 +85,7 @@ class Moderation(commands.Cog):
     async def referralban(self, ctx, member:discord.Member):
         role = discord.utils.get(ctx.guild.roles, name="Referral Banned")
         if role == None:
-            await ctx.send("No role called \"Referral Banned\" found")
+            await ctx.send("No role called 'Referral Banned' found")
             return
         if role in member.roles:
             await ctx.send("Member is already Referral Banned!")
@@ -98,7 +98,7 @@ class Moderation(commands.Cog):
     async def teamshareban(self, ctx, member:discord.Member):
         role = discord.utils.get(ctx.guild.roles, name="Team Share Banned")
         if role == None:
-            await ctx.send("No role called \"Team Share Banned\" found")
+            await ctx.send("No role called 'Team Share Banned' found")
             return
         if role in member.roles:
             await ctx.send("Member is already Referral Banned!")
