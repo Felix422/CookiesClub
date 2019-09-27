@@ -4,10 +4,6 @@ import asyncio
 from discord.ext import commands
 
 from config import WOLFRAM_KEY
-
-QUERY_ERROR = commands.CommandError('Query failed. Try again later.')
-
-
 class Wolfram(commands.Cog):
 
     def __init__(self, bot):
@@ -38,7 +34,8 @@ class Wolfram(commands.Cog):
 
                     res = await resp.text()
             except asyncio.TimeoutError:
-                raise QUERY_ERROR
+                await ctx.send("Query error")
+                return
 
         query = query.replace('`', '\u200b`')
 
