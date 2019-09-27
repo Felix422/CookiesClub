@@ -25,7 +25,7 @@ class Info(commands.Cog):
         hours, remainder = divmod(int(seconds), 3600)
         minutes, seconds = divmod(remainder, 60)
         days, hours = divmod(hours, 24)
-        return f"{days}:{hours}:{minutes}:{seconds}"
+        return f"{days}-{hours}:{minutes}:{seconds}"
 
     def cleanup_code(self, content):
         if content.startswith("```") and content.endswith("```"):
