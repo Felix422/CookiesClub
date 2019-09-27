@@ -12,7 +12,7 @@ class EH(commands.Cog):
         elif isinstance(error, discord.ext.commands.errors.CommandOnCooldown):
             await ctx.send(f"Command on cooldown, try again in {round(error.retry_after)}s")
         elif isinstance(error, discord.ext.commands.errors.CommandError):
-            await ctx.send("Query error")
+            return
         elif isinstance(error, discord.ext.commands.errors.MissingRole):
             await ctx.send("You don't have permission for this")
         elif isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
