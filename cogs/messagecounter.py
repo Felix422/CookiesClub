@@ -17,20 +17,14 @@ class MessageCounter(commands.Cog):
             self.message_counter += 1
             if self.message_counter == self.messages_required:
                 await message.channel.send(choice(COUNTER_MESSAGES).format(message.author.mention))
-                print(f"Sent counter message")
                 self.message_counter = 0
                 self.messages_required = random(200, 300)
-                print(f"New message requirement is {self.messages_required}")
+                print(f"Sent counter message, new message requirement is {self.messages_required}")
 
     @commands.command()
     @commands.has_role("Staff")
     async def counter(self, ctx):
         await ctx.send(f"Counter is at {self.message_counter}")
-
-    @commands.command()
-    @commands.has_role("Staff")
-    async def countertest(self, ctx):
-        await ctx.channel.send(choice(COUNTER_MESSAGES).format(ctx.author.mention))
 
 
 def setup(bot):
