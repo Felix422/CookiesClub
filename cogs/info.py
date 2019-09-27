@@ -8,8 +8,10 @@ import platform
 import sys
 import os
 import datetime
-import uptime
-import subprocess
+import typing
+from uptime import _uptime_linux as linux_uptime
+from subprocess import Popen, PIPE
+from distro import linux_distribution as distro_info
 from contextlib import redirect_stdout
 from pprint import pprint
 from tabulate import tabulate
@@ -76,7 +78,7 @@ class Info(commands.Cog):
     @commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
     async def acronyms(self, ctx):
         e = discord.Embed(color=discord.Color.green())
-        e.add_field(name="Acronyms", value="SC = Showcase\nMSC = Mystery showcase\nCC = Cupcakes\nRC = Rainbow cookies\nDC = Dark cookies\nLC = Light cookies\nIG = Intergalactic baker")
+        e.add_field(name="Acronyms", value="""SC = Showcase\nMSC = Mystery showcase\nCC = Cupcakes\nRC = Rainbow cookies\nDC = Dark cookies\nLC = Light cookies\nIG = Intergalactic baker""")
         await ctx.send(embed=e)
 
     @commands.command()
@@ -86,8 +88,7 @@ class Info(commands.Cog):
 
     @commands.command()
     async def joinpos(self, ctx):
-        index = list(filter(lambda m: not m.bot, sorted(ctx.guild.members, key=lambda o: o.joined_at))).index(ctx.author)+1
-        await ctx.send(index)
+        await ctx.send(list(filter(lambda m: not m.bot, sorted(ctx.guild.members, key=lambda o: o.joined_at))).index(ctx.author)+1)
 
     @commands.command()
     async def charinfo(self, ctx, *, characters: str):
@@ -144,7 +145,7 @@ class Info(commands.Cog):
         else:
             await ctx.send(f"```py\n{value}\n```")
 
-    @commands.command(aliases = ["ub", "urabndictionary", "udictionary", "udefine", "urban"])
+    @commands.command(aliases = ["ub", "urban"])
     async def define(self, ctx, *args):
         baseurl = "https://www.urbandictionary.com/define.php?term="
         output = ""
@@ -157,13 +158,16 @@ class Info(commands.Cog):
     @commands.command()
     @commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
     async def botinfo(self, ctx):
+        bot_uptime = f"Bot uptime: {str(Popen(['ps', '-o', 'etime', '-p', str(os.getpid())], stdout=PIPE, universal_newlines=True).communicate()[0][12::]).rstrip()}"
         e = discord.Embed(title="Bot info", description="General info about the bot", color=discord.Color.blurple())
-        e.add_field(name=f"Versions:",value=f"""Raspbian Linux {platform.dist()[1]}
-                    discord.py {discord.__version__}
-                    Python {'.'.join([str(value) for value in sys.version_info[:3]])}""")
-        e.add_field(name="Uptime:", value=f"""System uptime: {self.s_to_time(uptime.uptime())}
-                    Bot uptime:{str(subprocess.Popen(['ps', '-o', 'etime', '-p', str(os.getpid())], stdout=subprocess.PIPE, universal_newlines=True).communicate()[0][12::]).rstrip()}""")
+        e.add_field(name=f"Versions:",value=f"{' '.join(distro_info())}\ndiscord.py {discord.__version__}\nPython {platform.python_version()}")
+        e.add_field(name="Uptime:", value=f"System uptime: {self.s_to_time(linux_uptime())}\n{bot_uptime}", inline=False)
         await ctx.send(embed=e)
+
+    @commands.command()
+    async def test(self, ctx, *args : typing.Union[int, str]):
+        await ctx.send(' '.join([str(type(arg)) for arg in args]))
+        await ctx.send("something")
 
 def setup(bot):
     bot.add_cog(Info(bot))
