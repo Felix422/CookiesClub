@@ -10,6 +10,7 @@ logging.basicConfig(level=logging.ERROR)
 # logger.addHandler(handler)
 
 class Bot(commands.Bot):
+    
     def __init__(self):
         super().__init__(
         command_prefix=COMMAND_PREFIX,
