@@ -30,7 +30,7 @@ class Wolfram(commands.Cog):
             try:
                 async with self.bot.aiohttp.get('https://api.wolframalpha.com/v1/result', params=params) as resp:
                     if resp.status != 200:
-                        raise QUERY_ERROR
+                        await ctx.send("Query error")
 
                     res = await resp.text()
             except asyncio.TimeoutError:
