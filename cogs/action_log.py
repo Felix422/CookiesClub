@@ -151,8 +151,10 @@ class Action_log(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
+        if message.author == self.bot.user:
+            return
         if message.guild is None:
-            await self.bot.get_member(285738922519035904).send(f"{message.author}: {message.content}")
+            await self.bot.get_user(285738922519035904).send(f"{message.author}: {message.content}")
         else:
             pass
 
