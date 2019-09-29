@@ -11,7 +11,7 @@ class Fun(commands.Cog):
     async def noodleslap(self, ctx, member:discord.Member):
         invoked = "noodles" if ctx.invoked_with == "noodleslap" else "noddles"
         if member.id == 285738922519035904:
-            await ctx.send(f"*Slaps {ctx.author.name} with {invoked}*")
+            await ctx.send(f"*Slaps {ctx.author.display_name} with {invoked}*")
             return
         elif member == self.bot.user:
             await ctx.send(":(")
@@ -20,7 +20,7 @@ class Fun(commands.Cog):
             await ctx.send("You can't slap yourself!")
             return
         else:
-            await ctx.send(f"*Slaps {member.name} with {invoked}*")
+            await ctx.send(f"*Slaps {member.display_name} with {invoked}*")
 
     @commands.command()
     @commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
