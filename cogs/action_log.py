@@ -45,7 +45,7 @@ class Action_log(commands.Cog):
             if channel is None:
                 return
             e = discord.Embed(description=f"**{member_after.mention} nickname changed**", color=discord.Color.blurple(), timestamp=datetime.utcnow())
-            e.add_field(name="Before", value=member_before.nick)
+            e.add_field(name="Before", value=member_before.nick if member_before.nick else member_before.name)
             e.add_field(name="After", value=member_after.nick, inline=False)
             e.set_author(name=member_before, icon_url=member_before.avatar_url)
             e.set_footer(text=f"ID: {member_after.id}")
