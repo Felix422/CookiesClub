@@ -11,6 +11,7 @@ class Action_log(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message_delete(self, message):
+        if message.guild is None: return
         channel = discord.utils.get(message.guild.text_channels, name="action_log")
         if channel is None: return
         if message.author.bot: return
@@ -21,6 +22,7 @@ class Action_log(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message_edit(self, message_before, message_after):
+        if message_before.guid is None: return
         channel = discord.utils.get(message_before.guild.text_channels, name="action_log")
         if channel is None:
             return
@@ -151,10 +153,11 @@ class Action_log(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
+        felix = await self.bot.get_user(285738922519035904)
         if message.author == self.bot.user:
             return
-        if message.guild is None:
-            await self.bot.get_user(285738922519035904).send(f"{message.author}: {message.content}")
+        if message.author != felix and message.guild is None:
+            await felix.send(f"{message.author}: {message.content}")
         else:
             pass
 

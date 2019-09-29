@@ -29,12 +29,9 @@ class Wolfram(commands.Cog):
         async with ctx.channel.typing():
             try:
                 async with self.bot.aiohttp.get('https://api.wolframalpha.com/v1/result', params=params) as resp:
-                    if resp.status != 200:
-                        await ctx.send("Query error")
-
                     res = await resp.text()
             except asyncio.TimeoutError:
-                await ctx.send("Query error")
+                await ctx.send("Timeout error")
                 return
 
         query = query.replace('`', '\u200b`')
