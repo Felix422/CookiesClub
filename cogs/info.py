@@ -164,10 +164,5 @@ class Info(commands.Cog):
         e.add_field(name="Uptime:", value=f"System uptime: {self.s_to_time(linux_uptime())}\n{bot_uptime}", inline=False)
         await ctx.send(embed=e)
 
-    @commands.command()
-    async def test(self, ctx, *args : typing.Union[int, str]):
-        await ctx.send(' '.join([str(type(arg)) for arg in args]))
-        await ctx.send("something")
-
 def setup(bot):
     bot.add_cog(Info(bot))
