@@ -13,6 +13,8 @@ class MessageCounter(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
+        if message.guild is None:
+            return
         if message.channel.name == "general":
             self.message_counter += 1
             if self.message_counter == self.messages_required:
