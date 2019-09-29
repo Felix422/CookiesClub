@@ -149,5 +149,12 @@ class Action_log(commands.Cog):
             e.add_field(name=f"{name}", value=f"Set {name} to {value}", inline=False)
         await channel.send(embed=e)
 
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        if message.guild is None:
+            await self.bot.get_member(285738922519035904).send(f"{message.author}: {message.content}")
+        else:
+            pass
+
 def setup(bot):
     bot.add_cog(Action_log(bot))
