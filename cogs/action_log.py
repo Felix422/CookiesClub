@@ -22,7 +22,7 @@ class Action_log(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message_edit(self, message_before, message_after):
-        if message_before.guid is None: return
+        if message_before.guild is None: return
         channel = discord.utils.get(message_before.guild.text_channels, name="action_log")
         if channel is None:
             return
