@@ -121,9 +121,9 @@ class Info(commands.Cog):
         stdout = io.StringIO()
         to_compile = f'async def func():\n{textwrap.indent(body, "  ")}'
         try:
-        	exec(to_compile, env)
+            exec(to_compile, env)
         except Exception as e:
-        	return await ctx.send(f"```py\n{e.__class__.__name__}: {e}\n```")
+            return await ctx.send(f"```py\n{e.__class__.__name__}: {e}\n```")
         func = env["func"]
         try:
             with redirect_stdout(stdout):
@@ -163,6 +163,20 @@ class Info(commands.Cog):
         e.add_field(name=f"Versions:",value=f"{' '.join(distro_info())}\ndiscord.py {discord.__version__}\nPython {platform.python_version()}")
         e.add_field(name="Uptime:", value=f"System uptime: {self.s_to_time(linux_uptime())}\n{bot_uptime}", inline=False)
         await ctx.send(embed=e)
+
+    @commands.command()
+    @commands.is_owner()
+    async def sql(self, ctx, *, query:str):
+        try:
+            result = await self.bot.db.fetch(query)
+        except Exception as exc:
+            await ctx.send(exc)
+            return
+        if not len(result):
+            await ctx.send("No rows returned")
+            return
+        table = tabulate(result, result[0].keys())
+        await ctx.send('```' + table + '```')
 
 def setup(bot):
     bot.add_cog(Info(bot))

@@ -1,13 +1,8 @@
-import discord, logging, os, aiohttp
+import discord, logging, os, aiohttp, asyncpg
 from discord.ext import commands
 from config import BOT_TOKEN, COMMAND_PREFIX
 
 logging.basicConfig(level=logging.ERROR)
-# logger = logging.getLogger('discord')
-# logger.setLevel(logging.DEBUG)
-# handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
-# handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
-# logger.addHandler(handler)
 
 class Bot(commands.Bot):
     
@@ -33,6 +28,7 @@ class Bot(commands.Bot):
             loop=self.loop,
             timeout=aiohttp.ClientTimeout(total=5)
         )
+        self.db = await asyncpg.create_pool("postgresql://pi:FelliFisch123@192.168.0.103/cookieclub")
         print(f"Bot Logged in as {self.user.name} and ready for duty!")
 
 Bot().run(BOT_TOKEN)
