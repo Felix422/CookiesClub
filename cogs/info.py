@@ -1,20 +1,13 @@
 import discord
 import unicodedata
-import io
-import textwrap
-import traceback
 import re
 import platform
-import sys
 import os
 import datetime
 import typing
 from uptime import _uptime_linux as linux_uptime
 from subprocess import Popen, PIPE
 from distro import linux_distribution as distro_info
-from contextlib import redirect_stdout
-from pprint import pprint
-from tabulate import tabulate
 from discord.ext import commands
 
 class Info(commands.Cog):
@@ -26,11 +19,6 @@ class Info(commands.Cog):
         minutes, seconds = divmod(remainder, 60)
         days, hours = divmod(hours, 24)
         return f"{days}-{hours}:{minutes}:{seconds}"
-
-    def cleanup_code(self, content):
-        if content.startswith("```") and content.endswith("```"):
-            return "\n".join(content.split("\n")[1:-1])
-        return content.strip("` \n")
 
     @commands.command()
     @commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
@@ -101,50 +89,6 @@ class Info(commands.Cog):
             return await ctx.send("Output too long to display.")
         await ctx.send(msg)
 
-    @commands.command()
-    @commands.is_owner()
-    async def eval(self, ctx, *, body: str):
-        """Evaluates some code."""
-        env = {
-            "discord": discord,
-            "bot": self.bot,
-            "ctx": ctx,
-            "channel": ctx.channel,
-            "author": ctx.author,
-            "guild": ctx.guild,
-            "message": ctx.message,
-            "pprint": pprint,
-            "tabulate": tabulate,
-        }
-        env.update(globals())
-        body = self.cleanup_code(body)
-        stdout = io.StringIO()
-        to_compile = f'async def func():\n{textwrap.indent(body, "  ")}'
-        try:
-            exec(to_compile, env)
-        except Exception as e:
-            return await ctx.send(f"```py\n{e.__class__.__name__}: {e}\n```")
-        func = env["func"]
-        try:
-            with redirect_stdout(stdout):
-                ret = await func()
-        except Exception as e:
-            value = stdout.getvalue()
-            await ctx.send(f"```py\n{value}{traceback.format_exc()}\n```")
-        else:
-            value = stdout.getvalue()
-        try:
-            await ctx.message.add_reaction("\u2705")
-        except:
-            pass
-        if ret is None:
-            if value:
-                if len(value) > 1994:
-                    fp = io.BytesIO(value.encode("utf-8"))
-                    await ctx.send("Log too large...", file=discord.File(fp, "results.txt"))
-        else:
-            await ctx.send(f"```py\n{value}\n```")
-
     @commands.command(aliases = ["ub", "urban"])
     async def define(self, ctx, *args):
         baseurl = "https://www.urbandictionary.com/define.php?term="
@@ -163,20 +107,6 @@ class Info(commands.Cog):
         e.add_field(name=f"Versions:",value=f"{' '.join(distro_info())}\ndiscord.py {discord.__version__}\nPython {platform.python_version()}")
         e.add_field(name="Uptime:", value=f"System uptime: {self.s_to_time(linux_uptime())}\n{bot_uptime}", inline=False)
         await ctx.send(embed=e)
-
-    @commands.command()
-    @commands.is_owner()
-    async def sql(self, ctx, *, query:str):
-        try:
-            result = await self.bot.db.fetch(query)
-        except Exception as exc:
-            await ctx.send(exc)
-            return
-        if not len(result):
-            await ctx.send("No rows returned")
-            return
-        table = tabulate(result, result[0].keys())
-        await ctx.send('```' + table + '```')
 
 def setup(bot):
     bot.add_cog(Info(bot))
