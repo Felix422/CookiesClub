@@ -5,7 +5,7 @@ from config import BOT_TOKEN, COMMAND_PREFIX
 logging.basicConfig(level=logging.ERROR)
 
 class Bot(commands.Bot):
-    
+
     def __init__(self):
         super().__init__(
         command_prefix=COMMAND_PREFIX,
@@ -28,7 +28,7 @@ class Bot(commands.Bot):
             loop=self.loop,
             timeout=aiohttp.ClientTimeout(total=5)
         )
-        self.db = await asyncpg.create_pool("postgresql://pi:FelliFisch123@192.168.0.103/cookieclub")
+        self.db = await asyncpg.create_pool(DB_BIND)
         print(f"Bot Logged in as {self.user.name} and ready for duty!")
 
 Bot().run(BOT_TOKEN)
