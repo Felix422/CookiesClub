@@ -1,11 +1,13 @@
 import discord, re, typing
 from discord.ext import commands
+from utils.checks import is_channel_allowed
 class Showcase(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
 
     @commands.command(aliases=["showcase"])
+    @commands.check(is_channel_allowed)
     @commands.cooldown(rate=2, per=10.0, type=commands.BucketType.user)
     async def sc(self, ctx, sc:typing.Union[int, str]=0, msc=0):
         member = ctx.author

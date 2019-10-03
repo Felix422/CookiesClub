@@ -5,6 +5,7 @@ import platform
 import os
 import datetime
 import typing
+from utils.checks import is_channel_allowed
 from uptime import _uptime_linux as linux_uptime
 from subprocess import Popen, PIPE
 from distro import linux_distribution as distro_info
@@ -63,6 +64,7 @@ class Info(commands.Cog):
             await ctx.send(f"Command `{command}` not found")
 
     @commands.command()
+    @commands.check(is_channel_allowed)
     @commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
     async def acronyms(self, ctx):
         e = discord.Embed(color=discord.Color.green())
@@ -70,6 +72,7 @@ class Info(commands.Cog):
         await ctx.send(embed=e)
 
     @commands.command()
+    @commands.check(is_channel_allowed)
     async def ping(self, ctx):
         await ctx.send(f"Pong! `{round(self.bot.latency * 1000)}ms`")
         print(f"Ping is {round(self.bot.latency * 1000)}ms")
@@ -78,18 +81,8 @@ class Info(commands.Cog):
     async def joinpos(self, ctx):
         await ctx.send(list(filter(lambda m: not m.bot, sorted(ctx.guild.members, key=lambda o: o.joined_at))).index(ctx.author)+1)
 
-    @commands.command()
-    async def charinfo(self, ctx, *, characters: str):
-        def to_string(c):
-            digit = f"{ord(c):x}"
-            name = unicodedata.name(c, "Name not found.")
-            return f"`\\U{digit:>08}`: {name} - {c} \N{EM DASH} <http://www.fileformat.info/info/unicode/char/{digit}>"
-        msg = "\n".join(map(to_string, characters))
-        if len(msg) > 2000:
-            return await ctx.send("Output too long to display.")
-        await ctx.send(msg)
-
     @commands.command(aliases = ["ub", "urban"])
+    @commands.check(is_channel_allowed)
     async def define(self, ctx, *args):
         baseurl = "https://www.urbandictionary.com/define.php?term="
         output = ""
@@ -100,6 +93,7 @@ class Info(commands.Cog):
         await ctx.send(baseurl + output)
 
     @commands.command()
+    @commands.check(is_channel_allowed)
     @commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
     async def botinfo(self, ctx):
         bot_uptime = f"Bot uptime: {str(Popen(['ps', '-o', 'etime', '-p', str(os.getpid())], stdout=PIPE, universal_newlines=True).communicate()[0][12::]).rstrip()}"

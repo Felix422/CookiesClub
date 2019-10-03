@@ -1,4 +1,5 @@
 import discord, random, traceback, sys
+from utils.checks import is_channel_allowed
 from discord.ext import commands
 
 class Fun(commands.Cog):
@@ -7,6 +8,7 @@ class Fun(commands.Cog):
         self.bot = bot
 
     @commands.command(aliases=["noddleslap"])
+    @commands.check(is_channel_allowed)
     @commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
     async def noodleslap(self, ctx, member:discord.Member):
         invoked = "noodles" if ctx.invoked_with == "noodleslap" else "noddles"
@@ -23,6 +25,7 @@ class Fun(commands.Cog):
             await ctx.send(f"*Slaps {member.display_name} with {invoked}*")
 
     @commands.command()
+    @commands.check(is_channel_allowed)
     @commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
     async def baguette(self, ctx):
         await ctx.message.delete()
