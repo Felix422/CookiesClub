@@ -11,7 +11,7 @@ from discord.ext import commands
 class Owner(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        
+
     def cleanup_code(self, content):
         if content.startswith("```") and content.endswith("```"):
             return "\n".join(content.split("\n")[1:-1])
@@ -36,6 +36,7 @@ class Owner(commands.Cog):
     async def eval(self, ctx, *, body: str):
         """Evaluates some code."""
         env = {
+            "db": self.bot.db,
             "discord": discord,
             "bot": self.bot,
             "ctx": ctx,
