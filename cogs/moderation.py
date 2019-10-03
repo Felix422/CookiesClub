@@ -6,11 +6,6 @@ class Moderation(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-        try:
-            with open("warns.json", "r") as f:
-                warns = json.load(f)
-        except:
-            print("File 'warns.json' not found")
 
     @commands.command(aliases=["purge"])
     @commands.has_role("Staff")
@@ -108,52 +103,41 @@ class Moderation(commands.Cog):
 
     @commands.command()
     @commands.has_role("Staff")
-    async def warn(self, ctx, member:discord.Member, *, reason=None):
+    async def warn(self, ctx, member:discord.Member, *, reason="No reason given"):
         if member == ctx.author:
             await ctx.send("You cant warn yourself!")
             return
-        with open("warns.json", "r") as f:
-            warns = json.load(f)
-        if str(ctx.guild.id) not in warns:
-            warns[str(ctx.guild.id)] = {}
-        if str(member.id) not in warns[str(ctx.guild.id)]:
-            warns[str(ctx.guild.id)][str(member.id)] = {"warns": []}
-        warns[str(ctx.guild.id)][str(member.id)]["warns"].append(reason)
-        with open("warns.json", "w") as f:
-            json.dump(warns, f, indent=4, sort_keys=True)
-        await ctx.send(f"Warned user {member.name} with reason {reason}")
+        await self.bot.db.fetch("INSERT INTO warns (user_id, guild_id, reason, epic_dude, active) VALUES ($1, $2, $3, $4, B'1')", member.id, ctx.guild.id, reason, str(ctx.author))
+        await ctx.send(f"Warned {member.display_name} {f'with reason: {reason}' if reason != 'No reason given' else ''}")
 
     @commands.command()
     @commands.has_role("Staff")
     async def warns(self, ctx, member:discord.Member):
-        if member is None:
-            await ctx.send("No member passed")
+        warns = await self.bot.db.fetch("SELECT warn_id, reason, epic_dude FROM warns WHERE user_id = $1 AND guild_id = $2 AND active = B'1'", member.id, ctx.guild.id)
+        if warns == []:
+            await ctx.send(f"{str(member)} has no warns!")
             return
-        warnlist = ""
-        with open("warns.json", "r") as f:
-            warns = json.load(f)
-        try:
-            for warn in warns[str(ctx.guild.id)][str(member.id)]["warns"]:
-                warnlist = f"{warnlist} {warn}\n"
-            await ctx.send(f"```{warnlist}```")
-        except KeyError:
-            await ctx.send("User has no warns")
+        warn_list = []
+        for warn in warns:
+            warn_list.append(f"User: ({member.id}) {str(member)} Moderator: {warn['epic_dude']}\nID:{warn['warn_id']}   {warn['reason']}")
+        await ctx.send("```" + '\n'.join(warn_list) + "```")
+
+    @commands.command()
+    @commands.has_role("Staff")
+    async def allwarns(self, ctx, member:discord.Member):
+        warns = await self.bot.db.fetch("SELECT warn_id, reason, epic_dude, active FROM warns WHERE user_id = $1 AND guild_id = $2", member.id, ctx.guild.id)
+        if warns == []:
+            await ctx.send(f"{str(member)} has no warns!")
+            return
+        warn_list = []
+        for warn in warns:
+            warn_list.append(f"User: ({member.id}) {str(member)} Moderator: {warn['epic_dude']}  ({'ACTIVE' if warn['active'].to_int() else 'INACTIVE'})\nID:{warn['warn_id']}   {warn['reason']}")
+        await ctx.send("```" + '\n'.join(warn_list) + "```")
 
     @commands.command()
     @commands.has_role("Staff")
     async def clearwarns(self, ctx, member:discord.Member):
-        if member is None:
-            await ctx.send("No member passed")
-            return
-        with open("warns.json", "r") as f:
-            warns = json.load(f)
-        try:
-            warns[str(ctx.guild.id)].pop(str(member.id))
-            with open("warns.json", "w") as f:
-                json.dump(warns, f, indent=4, sort_keys=True)
-            await ctx.send(f"Cleared warns for {member.name}")
-        except KeyError:
-            await ctx.send("User doesnt have any warns")
+        await self.bot.db.fetch("UPDATE warns SET active = B'0' WHERE user_id = $1 AND guild_id = $2", member.id, ctx.guild.id)
 
 def setup(bot):
     bot.add_cog(Moderation(bot))
