@@ -13,10 +13,10 @@ class EH(commands.Cog):
             await ctx.send(f"Command on cooldown, try again in {round(error.retry_after)}s")
         elif isinstance(error, discord.ext.commands.errors.CommandError):
             return
-        elif isinstance(error, discord.ext.commands.errors.MissingRole):
+        elif isinstance(error, discord.ext.commands.errors.MissingRole) or isinstance(error, discord.ext.commands.NotOwner):
             await ctx.send("You don't have permission for this")
         elif isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-            await ctx.send(f"Missing required argument: `{error.param.name}`")
+            await ctx.send(f"{error.param.name} is a required argument that is missing")
         elif isinstance(error, discord.ext.commands.errors.BadArgument):
             await ctx.send("Bad argument")
             return
