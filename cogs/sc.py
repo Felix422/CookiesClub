@@ -5,32 +5,32 @@ class Showcase(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(aliases=["sc"])
+    @commands.command(aliases=["showcase"])
     @commands.cooldown(rate=2, per=10.0, type=commands.BucketType.user)
-    async def showcase(self, ctx, showcase:typing.Union[int, str]=0, mysteryshowcase=0):
+    async def sc(self, ctx, sc:typing.Union[int, str]=0, msc=0):
         member = ctx.author
         current_name = member.display_name
-        if isinstance(showcase, int):
-            if showcase < 0 or mysteryshowcase < 0:
+        if isinstance(sc, int):
+            if sc < 0 or msc < 0:
                 await ctx.send("Sc count cant be negative!")
-            elif mysteryshowcase > 16 or showcase > 96:
+            elif msc > 16 or sc > 96:
                 await ctx.send("SC count too high!")
                 return
-            elif showcase > 70:
-                await ctx.send("Showcases 70+ onward need staff permission or the nickname permission to be added as a tag.")
+            elif sc > 70:
+                await ctx.send("Showcasess 70+ onward need staff permission or the nickname permission to be added as a tag.")
                 return
-            elif showcase == 0 and mysteryshowcase == 0:
+            elif sc == 0 and msc == 0:
                 e = discord.Embed(colour=discord.Color.green())
-                e.set_author(name="Showcase")
-                e.add_field(name="Usage:", value=".showcase [SC] [MSC(Optional)]\n.showcase clear")
+                e.set_author(name="sc")
+                e.add_field(name="Usage:", value=".sc [SC] [MSC(Optional)]\n.sc clear")
                 e.add_field(name="Description:", value="Sets your SC tag", inline=False)
                 e.add_field(name="Aliases:", value="showcase, sc", inline=False)
                 await ctx.send(embed=e)
                 return
-            elif mysteryshowcase == 0:
+            elif msc == 0:
                 if member.nick is not None:
                     oldnick = re.search("^(.*?)(\(SC\s?#\s?[-?\d\+\s?]*\)|)$", member.nick, re.IGNORECASE).group(1)
-                    fullnick = f"{oldnick}(SC#{showcase})"
+                    fullnick = f"{oldnick}(SC#{sc})"
                     if len(fullnick) > 32:
                         await ctx.send("Name is too long!")
                         return
@@ -39,7 +39,7 @@ class Showcase(commands.Cog):
                     print(f"Changed nickname for {current_name} to {fullnick}")
                     return
                 else:
-                    fullnick = f"{member.name}(SC#{showcase})"
+                    fullnick = f"{member.name}(SC#{sc})"
                     if len(fullnick) > 32:
                         await ctx.send("Name is too long!")
                         return
@@ -50,7 +50,7 @@ class Showcase(commands.Cog):
             else:
                 if member.nick is not None:
                     oldnick = re.search("^(.*?)(\(SC\s?#\s?[-?\d\+\s?]*\)|)$", member.nick, re.IGNORECASE).group(1)
-                    fullnick = f"{oldnick}(SC#{showcase}+{mysteryshowcase})"
+                    fullnick = f"{oldnick}(SC#{sc}+{msc})"
                     if len(fullnick) > 32:
                         await ctx.send("Nickname too long!")
                         return
@@ -59,7 +59,7 @@ class Showcase(commands.Cog):
                     print(f"Changed nickname for {current_name} to {fullnick}")
                     return
                 else:
-                    fullnick = f"{member.name}(SC#{showcase}+{mysteryshowcase})"
+                    fullnick = f"{member.name}(SC#{sc}+{msc})"
                     if len(fullnick) > 32:
                         await ctx.send("Name is too long!")
                         return
@@ -67,8 +67,8 @@ class Showcase(commands.Cog):
                     await ctx.send(f"Changed your nickname to {fullnick}")
                     print(f"Changed nickname for {current_name} to {fullnick}")
                     return
-        elif isinstance(showcase, str):
-            if showcase == "clear":
+        elif isinstance(sc, str):
+            if sc == "clear":
                 if member.nick is not None:
                     oldnick = re.search("^(.*?)(\(SC\s?#\s?[-?\d\+\s?]*\)|)$", member.nick, re.IGNORECASE).group(1)
                     await member.edit(nick=oldnick)
