@@ -32,7 +32,6 @@ class Moderation(commands.Cog):
             if (ban_entry.user.name, ban_entry.user.discriminator) == (member_name, member_discriminator):
                 await ctx.guild.unban(ban_entry.user)
                 await ctx.send(f"Unbanned {ban_entry.user.name}")
-                print(f"{ban_entry.user} got unbanned from {ctx.guild.name}")
                 channel = discord.utils.get(ctx.guild.text_channels, name="member_logs")
                 embed = discord.Embed(description=f"{ban_entry.user.name}#{ban_entry.user.discriminator} ", colour=discord.Color.green(), timestamp=datetime.utcnow())
                 embed.set_thumbnail(url=ban_entry.user.avatar_url)

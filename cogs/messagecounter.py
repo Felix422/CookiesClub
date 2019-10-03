@@ -21,7 +21,6 @@ class MessageCounter(commands.Cog):
                 await message.channel.send(choice(COUNTER_MESSAGES).format(message.author.mention))
                 self.message_counter = 0
                 self.messages_required = random(200, 300)
-                print(f"Sent counter message, new message requirement is {self.messages_required}")
 
     @commands.command()
     @commands.has_role("Staff")

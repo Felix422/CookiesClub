@@ -38,7 +38,6 @@ class Showcase(commands.Cog):
                         return
                     await member.edit(nick=fullnick)
                     await ctx.send(f"Changed your nickname to {fullnick}")
-                    print(f"Changed nickname for {current_name} to {fullnick}")
                     return
                 else:
                     fullnick = f"{member.name}(SC#{sc})"
@@ -47,7 +46,6 @@ class Showcase(commands.Cog):
                         return
                     await member.edit(nick=fullnick)
                     await ctx.send(f"Changed your nickname to {fullnick}")
-                    print(f"Changed nickname for {current_name} to {fullnick}")
                     return
             else:
                 if member.nick is not None:
@@ -58,7 +56,6 @@ class Showcase(commands.Cog):
                         return
                     await member.edit(nick=fullnick)
                     await ctx.send(f"Changed your nickname to {fullnick}")
-                    print(f"Changed nickname for {current_name} to {fullnick}")
                     return
                 else:
                     fullnick = f"{member.name}(SC#{sc}+{msc})"
@@ -67,7 +64,6 @@ class Showcase(commands.Cog):
                         return
                     await member.edit(nick=fullnick)
                     await ctx.send(f"Changed your nickname to {fullnick}")
-                    print(f"Changed nickname for {current_name} to {fullnick}")
                     return
         elif isinstance(sc, str):
             if sc == "clear":
