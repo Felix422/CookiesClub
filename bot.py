@@ -1,6 +1,6 @@
 import discord, logging, os, aiohttp, asyncpg
 from discord.ext import commands
-from config import BOT_TOKEN, COMMAND_PREFIX
+from config import BOT_TOKEN, COMMAND_PREFIX, DB_BIND
 
 logging.basicConfig(level=logging.ERROR)
 
