@@ -64,7 +64,6 @@ class Info(commands.Cog):
             await ctx.send(f"Command `{command}` not found")
 
     @commands.command()
-    @commands.check(is_channel_allowed)
     @commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
     async def acronyms(self, ctx):
         e = discord.Embed(color=discord.Color.green())
