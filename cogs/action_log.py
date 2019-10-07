@@ -77,18 +77,18 @@ class Action_log(commands.Cog):
                     await channel.send(embed=e)
 
     @commands.Cog.listener()
-    async def on_bulk_message_delete(self, messages):
-        channel = discord.utils.get(messages[0].guild.text_channels, name="action_log")
+    async def on_raw_bulk_message_delete(self, payload):
+        guild = self.bot.get_guild(playload.guild_id)
+        channel = discord.utils.get(guild.text_channels, name="action_log")
+        purge_channel = self.bot.get_channel(payload.chanel_id)
         if channel is None:
             return
-        if len(messages) == 1:
-            e = discord.Embed(description=f"**Bulk deleted {len(messages)} message in <#{messages[0].channel.id}>**", color=discord.Color.blurple(), timestamp=datetime.utcnow())
+        if len(payload.message_ids) == 1:
+            e = discord.Embed(description=f"**Bulk deleted {len(payload.message_ids)} message in {purge_channel.mention}**", color=discord.Color.blurple(), timestamp=datetime.utcnow())
         else:
-            e = discord.Embed(description=f"**Bulk deleted {len(messages)} messages in <#{messages[0].channel.id}>**", color=discord.Color.blurple(), timestamp=datetime.utcnow())
-        e.set_author(name=messages[0].guild.name, icon_url=messages[0].guild.icon_url)
+            e = discord.Embed(description=f"**Bulk deleted {len(payload.message_ids)} messages in {purge_channel.mention}**", color=discord.Color.blurple(), timestamp=datetime.utcnow())
+        e.set_author(name=guild.name, icon_url=guild.icon_url)
         await channel.send(embed=e)
-        purge_channel = messages[0].channel
-        print(f"Purged {len(messages) - 1} messages in #{purge_channel} on {messages[0].guild.name}")
 
     @commands.Cog.listener()
     async def on_command_completion(self, ctx):
