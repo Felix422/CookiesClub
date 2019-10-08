@@ -1,5 +1,5 @@
-import discord, traceback, sys, json
 from datetime import datetime
+import discord
 from discord.ext import commands
 
 class Moderation(commands.Cog):
@@ -9,7 +9,7 @@ class Moderation(commands.Cog):
 
     @commands.command(aliases=["purge"])
     @commands.has_role("Staff")
-    async def clear(self, ctx, amount : int = 1):
+    async def clear(self, ctx, amount: int = 1):
         await ctx.message.delete()
         await ctx.channel.purge(limit=amount)
         if amount == 1:
@@ -43,13 +43,13 @@ class Moderation(commands.Cog):
 
     @commands.command()
     @commands.has_role("Staff")
-    async def ban(self, ctx, member : discord.Member, *, reason=None):
-        await member.ban(reason=reason)
+    async def ban(self, ctx, member: discord.Member, *, reason=None):
+        await ctx.guild.ban(user=member, reason=reason, delete_message_days=7)
         await ctx.send(f"Banned {member.mention}!")
 
     @commands.command()
     @commands.has_role("Staff")
-    async def kick(self, ctx, member:discord.Member, *, reason=None):
+    async def kick(self, ctx, member: discord.Member, *, reason=None):
         await member.kick(reason=reason)
         await ctx.send(f"Kicked {member.mention}")
 
@@ -60,25 +60,25 @@ class Moderation(commands.Cog):
 
     @commands.command()
     @commands.has_role("Staff")
-    async def setnick(self, ctx, member:discord.Member, *, nick):
+    async def setnick(self, ctx, member: discord.Member, *, nick):
         if member == ctx.guild.owner:
             await ctx.send("I can't edit the server owner!")
             return
-            if len(nick) > 32:
-                await ctx.send("Nickname too long!")
-                return
-                await member.edit(nick=nick)
-                await ctx.send(f"Set nick for {member.name} to {nick}")
+        if len(nick) > 32:
+            await ctx.send("Nickname too long!")
+            return
+        await member.edit(nick=nick)
+        await ctx.send(f"Set nick for {member.name} to {nick}")
 
     @commands.command()
     @commands.has_role("Staff")
-    async def resetnick(self, ctx, member:discord.Member):
+    async def resetnick(self, ctx, member: discord.Member):
         await member.edit(nick=member.name)
 
     @commands.command()
-    async def referralban(self, ctx, member:discord.Member):
+    async def referralban(self, ctx, member: discord.Member):
         role = discord.utils.get(ctx.guild.roles, name="Referral Banned")
-        if role == None:
+        if role is None:
             await ctx.send("No role called 'Referral Banned' found")
             return
         if role in member.roles:
@@ -89,9 +89,9 @@ class Moderation(commands.Cog):
 
     @commands.command()
     @commands.has_role("Staff")
-    async def teamshareban(self, ctx, member:discord.Member):
+    async def teamshareban(self, ctx, member: discord.Member):
         role = discord.utils.get(ctx.guild.roles, name="Team Share Banned")
-        if role == None:
+        if role is None:
             await ctx.send("No role called 'Team Share Banned' found")
             return
         if role in member.roles:
@@ -102,7 +102,7 @@ class Moderation(commands.Cog):
 
     @commands.command()
     @commands.has_role("Staff")
-    async def warn(self, ctx, member:discord.Member, *, reason="No reason given"):
+    async def warn(self, ctx, member: discord.Member, *, reason="No reason given"):
         if member == ctx.author:
             await ctx.send("You cant warn yourself!")
             return
@@ -111,7 +111,7 @@ class Moderation(commands.Cog):
 
     @commands.command()
     @commands.has_role("Staff")
-    async def warns(self, ctx, member:discord.Member):
+    async def warns(self, ctx, member: discord.Member):
         warns = await self.bot.db.fetch("SELECT warn_id, reason, epic_dude FROM warns WHERE user_id = $1 AND guild_id = $2 AND active = B'1'", member.id, ctx.guild.id)
         if warns == []:
             await ctx.send(f"{str(member)} has no warns!")
@@ -123,7 +123,7 @@ class Moderation(commands.Cog):
 
     @commands.command()
     @commands.has_role("Staff")
-    async def allwarns(self, ctx, member:discord.Member):
+    async def allwarns(self, ctx, member: discord.Member):
         warns = await self.bot.db.fetch("SELECT warn_id, reason, epic_dude, active FROM warns WHERE user_id = $1 AND guild_id = $2", member.id, ctx.guild.id)
         if warns == []:
             await ctx.send(f"{str(member)} has no warns!")
@@ -135,7 +135,7 @@ class Moderation(commands.Cog):
 
     @commands.command()
     @commands.has_role("Staff")
-    async def clearwarns(self, ctx, member:discord.Member):
+    async def clearwarns(self, ctx, member: discord.Member):
         await self.bot.db.fetch("UPDATE warns SET active = B'0' WHERE user_id = $1 AND guild_id = $2", member.id, ctx.guild.id)
 
 def setup(bot):

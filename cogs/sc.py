@@ -1,3 +1,9 @@
+"""
+RegEx
+Database
+Discord
+Discord commands ext
+"""
 import re
 import asyncpg
 import discord
@@ -12,7 +18,9 @@ class SC(commands.Cog):
     async def change_name(self, member, channel, showcase=0, mystery_showcase=0):
         """function for the actual name change"""
         stripped_name = re.search(self.regex, member.display_name, re.IGNORECASE).group(1)
-        final_name = f'{stripped_name}(SC#{showcase}{f"+{mystery_showcase}" if mystery_showcase != 0 else ""})'
+        msc_tag = f"+{mystery_showcase}" if mystery_showcase != 0 else ""
+        full_tag = f'(SC#{showcase}{msc_tag}'
+        final_name = f'{stripped_name}{full_tag}'
         if len(final_name) > 32:
             await channel.send("Name is too long!")
             return
