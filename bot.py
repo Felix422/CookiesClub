@@ -23,12 +23,14 @@ class Bot(commands.Bot):
             extensions += 1
             self.load_extension(f"cogs.{cog_name}")
         print(f"Loaded {extensions} extensions")
-        print("Initializing aiohttp session")
+        print("Initializing AIOHTTP client session")
         self.aiohttp = aiohttp.ClientSession(
             loop=self.loop,
             timeout=aiohttp.ClientTimeout(total=5)
         )
+        print("Connecting to Database")
         self.db = await asyncpg.create_pool(DB_BIND)
+
         print(f"Bot Logged in as {self.user.name} and ready for duty!")
 
 Bot().run(BOT_TOKEN)
