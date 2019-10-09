@@ -19,7 +19,7 @@ class SC(commands.Cog):
         """function for the actual name change"""
         stripped_name = re.search(self.regex, member.display_name, re.IGNORECASE).group(1)
         msc_tag = f"+{mystery_showcase}" if mystery_showcase != 0 else ""
-        full_tag = f'(SC#{showcase}{msc_tag}'
+        full_tag = f'(SC#{showcase}{msc_tag})'
         final_name = f'{stripped_name}{full_tag}'
         if len(final_name) > 32:
             await channel.send("Name is too long!")
