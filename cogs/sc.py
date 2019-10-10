@@ -47,10 +47,10 @@ class SC(commands.Cog):
         if showcase > 70:
             sc_trusted = await self.bot.db.fetch('SELECT user_id FROM sc_trusted')
             trusted_list = [trusted_user['user_id'] for trusted_user in sc_trusted]
-            if ctx.author.id in trusted_list:
+            if ctx.author.id in trusted_list or discord.utils.get(ctx.guild.roles, name='Staff') in ctx.author.roles:
                 await self.change_name(ctx.author, ctx.channel, showcase, mystery_showcase)
             else:
-                await ctx.send('''Showcases 70+ onward need staff permission or the nickname permission to be added as a tag.''')
+                await ctx.send('''Showcases 70 and onward need staff permission or being on the trusted list to be used as a tag''')
         else:
             await self.change_name(ctx.author, ctx.channel, showcase, mystery_showcase)
 
