@@ -80,7 +80,7 @@ class Action_log(commands.Cog):
     async def on_raw_bulk_message_delete(self, payload):
         guild = self.bot.get_guild(payload.guild_id)
         channel = discord.utils.get(guild.text_channels, name="action_log")
-        purge_channel = self.bot.get_channel(payload.chanel_id)
+        purge_channel = self.bot.get_channel(payload.channel_id)
         if channel is None:
             return
         if len(payload.message_ids) == 1:
