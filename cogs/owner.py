@@ -12,11 +12,6 @@ class Owner(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    def cleanup_code(self, content):
-        if content.startswith("```") and content.endswith("```"):
-            return "\n".join(content.split("\n")[1:-1])
-        return content.strip("` \n")
-
     @commands.command()
     @commands.is_owner()
     async def sql(self, ctx, *, query:str):
@@ -33,47 +28,26 @@ class Owner(commands.Cog):
 
     @commands.command()
     @commands.is_owner()
-    async def eval(self, ctx, *, body: str):
-        """Evaluates some code."""
+    async def eval(self, ctx, *, code):
+        if 'import os' in code or 'import sys' in code or 'from config import BOT_TOKEN' in code:
+            return
+        code = code.strip('` ')
         env = {
-            "db": self.bot.db,
-            "discord": discord,
-            "bot": self.bot,
-            "ctx": ctx,
-            "channel": ctx.channel,
-            "author": ctx.author,
-            "guild": ctx.guild,
-            "message": ctx.message,
-            "tabulate": tabulate,
+            'discord' : discord,
+            'commands' : commands,
+            'bot' : self.bot,
+            'db' : self.bot.db,
+            'ctx' : ctx
+
         }
         env.update(globals())
-        body = self.cleanup_code(body)
-        stdout = io.StringIO()
-        to_compile = f'async def func():\n{textwrap.indent(body, "  ")}'
+        new_forced_async_code = f'async def code():\n{textwrap.indent(code, "    ")}'
+        exec(new_forced_async_code, env)
+        code = env['code']
         try:
-            exec(to_compile, env)
-        except Exception as e:
-            return await ctx.send(f"```py\n{e.__class__.__name__}: {e}\n```")
-        func = env["func"]
-        try:
-            with redirect_stdout(stdout):
-                ret = await func()
-        except Exception as e:
-            value = stdout.getvalue()
-            await ctx.send(f"```py\n{value}{traceback.format_exc()}\n```")
-        else:
-            value = stdout.getvalue()
-        try:
-            await ctx.message.add_reaction("\u2705")
-        except:
-            pass
-        if ret is None:
-            if value:
-                if len(value) > 1994:
-                    fp = io.BytesIO(value.encode("utf-8"))
-                    await ctx.send("Log too large...", file=discord.File(fp, "results.txt"))
-        else:
-            await ctx.send(f"```py\n{value}\n```")
+            await code()
+        except Exception:
+            await ctx.send(f'```{traceback.format_exc()}```')
 
 def setup(bot):
     bot.add_cog(Owner(bot))
