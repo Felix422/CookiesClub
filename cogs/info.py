@@ -76,6 +76,7 @@ class Info(commands.Cog):
         print(f"Ping is {round(self.bot.latency * 1000)}ms")
 
     @commands.command()
+    @commands.check(is_channel_allowed)
     async def joinpos(self, ctx):
         await ctx.send(sorted(filter(lambda m: not m.bot, ctx.guild.members), key=lambda o: o.joined_at).index(ctx.author)+1)
 
