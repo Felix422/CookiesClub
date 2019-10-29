@@ -1,4 +1,4 @@
-import discord, timeago
+import discord, timeago, io
 from collections import deque
 from datetime import datetime
 from discord.ext import commands
@@ -15,9 +15,17 @@ class Action_log(commands.Cog):
         channel = discord.utils.get(message.guild.text_channels, name="action_log")
         if channel is None: return
         if message.author.bot: return
-        e = discord.Embed(description=f"**message sent by {message.author.mention} deleted in <#{message.channel.id}>**\n{message.content}", color=discord.Color.red(), timestamp=datetime.utcnow())
+        e = discord.Embed(color=discord.Color.red(), timestamp=datetime.utcnow(),
+        description=f"**message sent by {message.author.mention} deleted in <#{message.channel.id}>**\n{message.content}",)
         e.set_author(name=message.author, icon_url=message.author.avatar_url)
         e.set_footer(text=f"Author: {message.author.id} | Message ID: {message.id}")
+        if message.attachments:
+            attachment = message.attachments[0]
+            img_bytes = io.BytesIO(await attachment.read(use_cached=True))
+            file = discord.File(img_bytes, filename=attachment.filename)
+            e.set_image(url=f'attachments://{attachment.filename}')
+            await channel.send(embed=e, file=file)
+            return
         await channel.send(embed=e)
 
     @commands.Cog.listener()
@@ -83,10 +91,8 @@ class Action_log(commands.Cog):
         purge_channel = self.bot.get_channel(payload.channel_id)
         if channel is None:
             return
-        if len(payload.message_ids) == 1:
-            e = discord.Embed(description=f"**Bulk deleted {len(payload.message_ids)} message in {purge_channel.mention}**", color=discord.Color.blurple(), timestamp=datetime.utcnow())
-        else:
-            e = discord.Embed(description=f"**Bulk deleted {len(payload.message_ids)} messages in {purge_channel.mention}**", color=discord.Color.blurple(), timestamp=datetime.utcnow())
+        e = discord.Embed(description=f"**Bulk deleted {len(payload.message_ids)} message{'s' if len(payload.message_ids) == 1 else ''} in {purge_channel.mention}**",
+        color=discord.Color.blurple(), timestamp=datetime.utcnow())
         e.set_author(name=guild.name, icon_url=guild.icon_url)
         await channel.send(embed=e)
 
@@ -95,7 +101,8 @@ class Action_log(commands.Cog):
         channel = discord.utils.get(ctx.guild.text_channels, name="action_log")
         if channel is None:
             return
-        e = discord.Embed(description=f"Used `{ctx.command}` command in <#{ctx.channel.id}>\n{ctx.message.content}", color=discord.Color.blurple(), timestamp=datetime.utcnow())
+        e = discord.Embed(description=f"Used `{ctx.command}` command in <#{ctx.channel.id}>\n{ctx.message.content}",
+        color=discord.Color.blurple(), timestamp=datetime.utcnow())
         e.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
         await channel.send(embed=e)
 
