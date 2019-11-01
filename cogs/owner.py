@@ -28,7 +28,7 @@ class Owner(commands.Cog):
 
     @commands.command()
     @commands.is_owner()
-    async def eval(self, ctx, *, code):
+    async def eval(self, ctx, *, code): # stole some stuff from https://gitlab.com/nitsuga5124/nitsugabot/blob/master/cogs/debug.py
         if 'import os' in code or 'import sys' in code or 'from config import BOT_TOKEN' in code:
             return
         code = code.strip('` ')
