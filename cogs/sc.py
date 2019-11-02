@@ -8,6 +8,7 @@ import re
 import asyncpg
 import discord
 from discord.ext import commands
+from utils.checks import is_channel_allowed
 
 class SC(commands.Cog):
     """Cog class"""
@@ -28,6 +29,7 @@ class SC(commands.Cog):
         await channel.send(f'Changed name to {final_name}')
 
     @commands.group(invoke_without_command=True, aliases=['sc'])
+    @commands.check(is_channel_allowed)
     async def showcase(self, ctx, showcase='0', mystery_showcase='0'):
         """adds a sc tag to a person"""
         try:
@@ -55,6 +57,7 @@ class SC(commands.Cog):
             await self.change_name(ctx.author, ctx.channel, showcase, mystery_showcase)
 
     @showcase.command()
+    @commands.check(is_channel_allowed)
     async def clear(self, ctx):
         """removes the sc tag for a member"""
         if ctx.author.nick is not None:

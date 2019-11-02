@@ -138,5 +138,28 @@ class Moderation(commands.Cog):
     async def clearwarns(self, ctx, member: discord.Member):
         await self.bot.db.fetch("UPDATE warns SET active = B'0' WHERE user_id = $1 AND guild_id = $2", member.id, ctx.guild.id)
 
+    @commands.command()
+    @commands.has_role('Staff')
+    async def allow_channel(self, ctx, channel=None):
+        if channel is None:
+            channel = ctx.channel
+        try:
+            self.bot.db.execute('INSERT INTO allowed_channels VALUES $1', channel.id)
+            await ctx.send('')
+        except asyncpg.exceptions.UniqueViolationError:
+            await ctx.send('Channel already allowed')
+
+    @commands.command()
+    @commands.has_role('Staff')
+    async def disallow_channel(self, ctx, channel=None):
+        if channel is None:
+            channel = ctx.channel
+        ret = self.bot.db.execute('DELETE FROM allowed_channels WHERE id = $1', channel.id)
+        if ret == 'DELETE 0':
+            await ctx.send('Channel is not allowed')
+            return
+        await ctx.send('Allowed channel')
+
+
 def setup(bot):
     bot.add_cog(Moderation(bot))
