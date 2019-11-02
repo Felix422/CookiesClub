@@ -12,9 +12,9 @@ class Action_log(commands.Cog):
     @commands.Cog.listener()
     async def on_message_delete(self, message):
         if message.guild is None: return
+        if message.author.bot: return
         channel = discord.utils.get(message.guild.text_channels, name="action_log")
         if channel is None: return
-        if message.author.bot: return
         e = discord.Embed(color=discord.Color.red(), timestamp=datetime.utcnow(),
         description=f"**message sent by {message.author.mention} deleted in <#{message.channel.id}>**\n{message.content}",)
         e.set_author(name=message.author, icon_url=message.author.avatar_url)
