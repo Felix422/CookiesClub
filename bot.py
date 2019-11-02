@@ -21,7 +21,10 @@ class Bot(commands.Bot):
         for filename in filter(lambda filename: filename.endswith(".py"), os.listdir("cogs")):
             cog_name = filename[:-3]
             extensions += 1
-            self.load_extension(f"cogs.{cog_name}")
+            try:
+                self.load_extension(f"cogs.{cog_name}")
+            except commands.errors.ExtensionAlreadyLoaded:
+                pass
         print(f"Loaded {extensions} extensions")
         print("Initializing AIOHTTP client session")
         self.aiohttp = aiohttp.ClientSession(
@@ -30,7 +33,8 @@ class Bot(commands.Bot):
         )
         print("Connecting to Database")
         self.db = await asyncpg.create_pool(DB_BIND)
-
+        ret = await self.db.fetch('SELECT ID FROM allowed_channels')
+        self.allowed_channels = [channel_id['id'] for channel_id in ret]
         print(f"Bot Logged in as {self.user.name} and ready for duty!")
 
 Bot().run(BOT_TOKEN)
