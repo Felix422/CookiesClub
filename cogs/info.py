@@ -73,7 +73,6 @@ class Info(commands.Cog):
     @commands.command()
     async def ping(self, ctx):
         await ctx.send(f"Pong! `{round(self.bot.latency * 1000)}ms`")
-        print(f"Ping is {round(self.bot.latency * 1000)}ms")
 
     @commands.command()
     @commands.check(is_channel_allowed)

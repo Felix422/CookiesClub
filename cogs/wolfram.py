@@ -46,7 +46,6 @@ class Wolfram(commands.Cog):
 
         if len(query) + len(res) > 1200:
             raise commands.CommandError('Wolfram response too long.')
-        print("Queried Wolfram")
         await ctx.send(embed=embed)
 
 def setup(bot):
