@@ -1,17 +1,10 @@
-"""
-RegEx
-Database
-Discord
-Discord commands ext
-"""
 import re
-import asyncpg
 import discord
+from asyncpg.exceptions import UniqueViolationError
 from discord.ext import commands
 from utils.checks import is_channel_allowed
 
 class SC(commands.Cog):
-    """Cog class"""
     def __init__(self, bot):
         self.bot = bot
         self.regex = r"^(.*?)(\(SC\s?#\s?[-?\d\+\s?]*\)|)$"
@@ -49,7 +42,12 @@ class SC(commands.Cog):
         if showcase > 70:
             sc_trusted = await self.bot.db.fetch('SELECT user_id FROM sc_trusted')
             trusted_list = [trusted_user['user_id'] for trusted_user in sc_trusted]
-            if ctx.author.id in trusted_list or discord.utils.get(ctx.guild.roles, name='Staff') in ctx.author.roles:
+            allowed = any([ctx.author.id in trusted_list,
+                discord.utils.get(ctx.guild.roles, name='Staff') in ctx.author.roles,
+                ctx.author.guild_permissions.manage_nicknames,
+                ctx.author.guild_permissions.change_nickname,
+                ctx.author.guild_permissions.administrator])
+            if allowed:
                 await self.change_name(ctx.author, ctx.channel, showcase, mystery_showcase)
             else:
                 await ctx.send('''Showcases 70 and onward need staff permission or being on the trusted list to be used as a tag''')
@@ -71,7 +69,7 @@ class SC(commands.Cog):
         try:
             await self.bot.db.fetch('INSERT INTO sc_trusted VALUES ($1)', member.id)
             await ctx.send(f"Trusted {member.mention}")
-        except asyncpg.exceptions.UniqueViolationError:
+        except UniqueViolationError:
             await ctx.send('User already trusted')
 
     @showcase.command()
