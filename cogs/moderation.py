@@ -1,5 +1,5 @@
 from datetime import datetime
-import discord
+import discord, asyncpg
 from discord.ext import commands
 
 class Moderation(commands.Cog):
@@ -140,25 +140,36 @@ class Moderation(commands.Cog):
 
     @commands.command()
     @commands.has_role('Staff')
-    async def allow_channel(self, ctx, channel=None):
+    async def allow_channel(self, ctx, channel: discord.TextChannel = None):
         if channel is None:
             channel = ctx.channel
         try:
-            self.bot.db.execute('INSERT INTO allowed_channels VALUES $1', channel.id)
-            await ctx.send('')
+            await self.bot.db.execute('insert into allowed_channels (channel_id) values ($1)', channel.id)
         except asyncpg.exceptions.UniqueViolationError:
             await ctx.send('Channel already allowed')
+            return
+        self.bot.allowed_channels.append(channel.id)
+        await ctx.send('Allowed Channel')
 
     @commands.command()
     @commands.has_role('Staff')
-    async def disallow_channel(self, ctx, channel=None):
+    async def disallow_channel(self, ctx, channel: discord.TextChannel = None):
         if channel is None:
             channel = ctx.channel
-        ret = self.bot.db.execute('DELETE FROM allowed_channels WHERE id = $1', channel.id)
+        con = await self.bot.db.acquire()
+        prep = await con.prepare('DELETE FROM allowed_channels WHERE channel_id = $1')
+        await prep.fetch(channel.id)
+        ret = prep.get_statusmsg()
         if ret == 'DELETE 0':
             await ctx.send('Channel is not allowed')
             return
-        await ctx.send('Allowed channel')
+        self.bot.allowed_channels.remove(channel.id)
+        await ctx.send('Disallowed channel')
+
+    @commands.command()
+    @commands.has_role('Staff')
+    async def channel_isallowed(self, ctx):
+        await ctx.send(ctx.channel.id in self.bot.allowed_channels)
 
 
 def setup(bot):
