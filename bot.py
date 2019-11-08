@@ -33,8 +33,8 @@ class Bot(commands.Bot):
         )
         print("Connecting to Database")
         self.db = await asyncpg.create_pool(DB_BIND)
-        ret = await self.db.fetch('SELECT ID FROM allowed_channels')
-        self.allowed_channels = [channel_id['id'] for channel_id in ret]
+        ret = await self.db.fetch('SELECT channel_id FROM allowed_channels')
+        self.allowed_channels = [channel_id['channel_id'] for channel_id in ret]
         print(f"Bot Logged in as {self.user.name} and ready for duty!")
 
 Bot().run(BOT_TOKEN)
