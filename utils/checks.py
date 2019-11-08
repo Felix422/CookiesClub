@@ -1,5 +1,4 @@
-import discord.utils
-from discord.ext import commands
+from discord.utils import get
 
 async def is_channel_allowed(ctx):
     channel_allowed = ctx.channel.id in ctx.bot.allowed_channels
