@@ -4,6 +4,7 @@ import traceback
 import io
 import os
 import sys
+from pprint import pprint
 from contextlib import redirect_stdout
 from tabulate import tabulate
 from discord.ext import commands
@@ -29,10 +30,11 @@ class Owner(commands.Cog):
     @commands.command()
     @commands.is_owner()
     async def eval(self, ctx, *, code): # stole some stuff from https://gitlab.com/nitsuga5124/nitsugabot/blob/master/cogs/debug.py
-        if 'import os' in code or 'import sys' in code or 'from config import BOT_TOKEN' in code:
+        if 'from config import BOT_TOKEN' in code:
             return
         code = code.strip('` ')
         env = {
+            'pprint' : pprint,
             'discord' : discord,
             'commands' : commands,
             'bot' : self.bot,
@@ -46,7 +48,7 @@ class Owner(commands.Cog):
         code = env['code']
         try:
             await code()
-        except Exception:
+        except:
             await ctx.send(f'```{traceback.format_exc()}```')
 
 def setup(bot):
