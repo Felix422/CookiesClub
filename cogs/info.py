@@ -78,7 +78,7 @@ class Info(commands.Cog):
     @commands.command()
     @commands.check(is_channel_allowed)
     async def joinpos(self, ctx):
-        await ctx.send(sorted(filter(lambda m: not m.bot, ctx.guild.members), key=lambda o: o.joined_at).index(ctx.author)+1)
+        await ctx.send(sorted([m for m in ctx.guild.members if not m.bot], key=lambda m: m.joined_at).index(ctx.author)+1)
 
     @commands.command(aliases = ["ub", "urban"])
     async def define(self, ctx, *args):
