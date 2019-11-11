@@ -8,7 +8,7 @@ class Moderation(commands.Cog):
         self.bot = bot
 
     @commands.command(aliases=["purge"])
-    @commands.has_role("Staff")
+    @commands.has_permissions(manage_messages=True)
     async def clear(self, ctx, amount: int = 1):
         await ctx.message.delete()
         await ctx.channel.purge(limit=amount)
@@ -18,7 +18,7 @@ class Moderation(commands.Cog):
             await ctx.send(f"Purged {amount} messages", delete_after=10)
 
     @commands.command()
-    @commands.has_role("Staff")
+    @commands.has_permissions(ban_members=True)
     async def unban(self, ctx, *, member=None):
         if member is None:
             await ctx.send("Who do you want to unban?")
@@ -42,24 +42,24 @@ class Moderation(commands.Cog):
         # await ctx.send("Member couldnt be found or isnt banned")
 
     @commands.command()
-    @commands.has_role("Staff")
+    @commands.has_permissions(ban_members=True)
     async def ban(self, ctx, member: discord.Member, *, reason=None):
         await ctx.guild.ban(user=member, reason=reason, delete_message_days=7)
         await ctx.send(f"Banned {member.mention}!")
 
     @commands.command()
-    @commands.has_role("Staff")
+    @commands.has_permissions(kick_members=True)
     async def kick(self, ctx, member: discord.Member, *, reason=None):
         await member.kick(reason=reason)
         await ctx.send(f"Kicked {member.mention}")
 
     @commands.command()
-    @commands.has_role("Staff")
+    @commands.has_permissions(manage_guild=True)
     async def leave(self, ctx):
         await ctx.guild.leave()
 
     @commands.command()
-    @commands.has_role("Staff")
+    @commands.has_permissions(manage_nicknames=True)
     async def setnick(self, ctx, member: discord.Member, *, nick):
         if member == ctx.guild.owner:
             await ctx.send("I can't edit the server owner!")
@@ -71,11 +71,12 @@ class Moderation(commands.Cog):
         await ctx.send(f"Set nick for {member.name} to {nick}")
 
     @commands.command()
-    @commands.has_role("Staff")
+    @commands.has_permissions(manage_nicknames=True)
     async def resetnick(self, ctx, member: discord.Member):
         await member.edit(nick=member.name)
 
     @commands.command()
+    @commands.has_permissions(manage_roles=True)
     async def referralban(self, ctx, member: discord.Member):
         role = discord.utils.get(ctx.guild.roles, name="Referral Banned")
         if role is None:
@@ -88,7 +89,7 @@ class Moderation(commands.Cog):
         await ctx.send(f"Referral Banned {member.name}")
 
     @commands.command()
-    @commands.has_role("Staff")
+    @commands.has_permissions(manage_roles=True)
     async def teamshareban(self, ctx, member: discord.Member):
         role = discord.utils.get(ctx.guild.roles, name="Team Share Banned")
         if role is None:
@@ -101,7 +102,7 @@ class Moderation(commands.Cog):
         await ctx.send(f"Team Share Banned {member.name}")
 
     @commands.command()
-    @commands.has_role("Staff")
+    @commands.has_permissions(kick_members=True)
     async def warn(self, ctx, member: discord.Member, *, reason="No reason given"):
         if member == ctx.author:
             await ctx.send("You cant warn yourself!")
@@ -110,7 +111,7 @@ class Moderation(commands.Cog):
         await ctx.send(f"Warned {member.display_name} {f'with reason: {reason}' if reason != 'No reason given' else ''}")
 
     @commands.command()
-    @commands.has_role("Staff")
+    @commands.has_permissions(kick_members=True)
     async def warns(self, ctx, member: discord.Member):
         warns = await self.bot.db.fetch("SELECT warn_id, reason, epic_dude FROM warns WHERE user_id = $1 AND guild_id = $2 AND active = B'1'", member.id, ctx.guild.id)
         if warns == []:
@@ -122,7 +123,7 @@ class Moderation(commands.Cog):
         await ctx.send("```" + '\n'.join(warn_list) + "```")
 
     @commands.command()
-    @commands.has_role("Staff")
+    @commands.has_permissions(kick_members=True)
     async def allwarns(self, ctx, member: discord.Member):
         warns = await self.bot.db.fetch("SELECT warn_id, reason, epic_dude, active FROM warns WHERE user_id = $1 AND guild_id = $2", member.id, ctx.guild.id)
         if warns == []:
@@ -134,12 +135,12 @@ class Moderation(commands.Cog):
         await ctx.send("```" + '\n'.join(warn_list) + "```")
 
     @commands.command()
-    @commands.has_role("Staff")
+    @commands.has_permissions(kick_members=True)
     async def clearwarns(self, ctx, member: discord.Member):
         await self.bot.db.fetch("UPDATE warns SET active = B'0' WHERE user_id = $1 AND guild_id = $2", member.id, ctx.guild.id)
 
     @commands.command()
-    @commands.has_role('Staff')
+    @commands.has_permissions(manage_channels=True)
     async def allow_channel(self, ctx, channel: discord.TextChannel = None):
         if channel is None:
             channel = ctx.channel
@@ -152,7 +153,7 @@ class Moderation(commands.Cog):
         await ctx.send('Allowed Channel')
 
     @commands.command()
-    @commands.has_role('Staff')
+    @commands.has_permissions(manage_channels=True)
     async def disallow_channel(self, ctx, channel: discord.TextChannel = None):
         if channel is None:
             channel = ctx.channel
@@ -165,12 +166,6 @@ class Moderation(commands.Cog):
             return
         self.bot.allowed_channels.remove(channel.id)
         await ctx.send('Disallowed channel')
-
-    @commands.command()
-    @commands.has_role('Staff')
-    async def channel_isallowed(self, ctx):
-        await ctx.send(ctx.channel.id in self.bot.allowed_channels)
-
 
 def setup(bot):
     bot.add_cog(Moderation(bot))
