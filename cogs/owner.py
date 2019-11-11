@@ -4,6 +4,7 @@ import traceback
 import io
 import os
 import sys
+
 from pprint import pprint
 from contextlib import redirect_stdout
 from tabulate import tabulate
@@ -13,8 +14,16 @@ class Owner(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    def cleanup_code(self, content: str):
+        if content.startswith('```') and content.endswith('```'):
+            return '\n'.join(content.split('\n')[1:-1])
+
+        return content.strip('` \n')
+
+    async def cog_check(self, ctx):
+        return await self.bot.is_owner(ctx.author)
+
     @commands.command()
-    @commands.is_owner()
     async def sql(self, ctx, *, query:str):
         try:
             result = await self.bot.db.fetch(query)
@@ -28,7 +37,6 @@ class Owner(commands.Cog):
         await ctx.send('```' + table + '```')
 
     @commands.command()
-    @commands.is_owner()
     async def eval(self, ctx, *, code): # stole some stuff from https://gitlab.com/nitsuga5124/nitsugabot/blob/master/cogs/debug.py
         if 'from config import BOT_TOKEN' in code:
             return
