@@ -8,19 +8,19 @@ class Fun(commands.Cog):
 
     @commands.command(aliases=["noddleslap"])
     @commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
-    async def noodleslap(self, ctx, member:discord.Member):
+    async def noodleslap(self, ctx, Member:discord.Member):
         invoked = "noodles" if ctx.invoked_with == "noodleslap" else "noddles"
-        if member.id == 285738922519035904:
+        if Member.id == 285738922519035904:
             await ctx.send(f"*Slaps {ctx.author.display_name} with {invoked}*")
             return
-        elif member == self.bot.user:
+        elif Member == self.bot.user:
             await ctx.send(":(")
             return
-        elif member == ctx.author:
+        elif Member == ctx.author:
             await ctx.send("You can't slap yourself!")
             return
         else:
-            await ctx.send(f"*Slaps {member.display_name} with {invoked}*")
+            await ctx.send(f"*Slaps {Member.display_name} with {invoked}*")
 
     @commands.command()
     @commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
