@@ -10,7 +10,8 @@ class Bot(commands.Bot):
         super().__init__(
         command_prefix=COMMAND_PREFIX,
         case_insensitive=True,
-        help_command=None
+        help_command=None,
+        owner_ids=set([285738922519035904, 592386292642349149])
         )
 
     async def on_connect(self):
