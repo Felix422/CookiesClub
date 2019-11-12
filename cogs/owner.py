@@ -16,9 +16,10 @@ class Owner(commands.Cog):
 
     def cleanup_code(self, content: str):
         if content.startswith('```') and content.endswith('```'):
-            return '\n'.join(content.split('\n')[1:-1])
-
-        return content.strip('` \n')
+            content = content.strip('```')
+            if content.startswith('py'):
+                return content.strip('py')
+        return content
 
     async def cog_check(self, ctx):
         return await self.bot.is_owner(ctx.author)
@@ -38,9 +39,7 @@ class Owner(commands.Cog):
 
     @commands.command()
     async def eval(self, ctx, *, code): # stole some stuff from https://gitlab.com/nitsuga5124/nitsugabot/blob/master/cogs/debug.py
-        if 'from config import BOT_TOKEN' in code:
-            return
-        code = code.strip('` ')
+        code = self.cleanup_code(code)
         env = {
             'pprint' : pprint,
             'discord' : discord,
@@ -52,11 +51,11 @@ class Owner(commands.Cog):
         }
         env.update(globals())
         new_forced_async_code = f'async def code():\n{textwrap.indent(code, "    ")}'
-        exec(new_forced_async_code, env)
-        code = env['code']
         try:
+            exec(new_forced_async_code, env)
+            code = env['code']
             await code()
-        except:
+        except Exception:
             await ctx.send(f'```{traceback.format_exc()}```')
 
 def setup(bot):
