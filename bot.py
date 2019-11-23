@@ -19,7 +19,7 @@ class Bot(commands.Bot):
 
     async def on_ready(self):
         extensions = 0
-        for filename in filter(lambda filename: filename.endswith(".py"), os.listdir("cogs")):
+        for filename in filter(lambda filename: filename.endswith(".py") and not filename.startswith('_'), os.listdir("cogs")):
             cog_name = filename[:-3]
             extensions += 1
             try:
