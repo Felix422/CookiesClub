@@ -121,7 +121,7 @@ class Moderation(commands.Cog):
         await self.bot.db.fetch("INSERT INTO warns (user_id, guild_id, reason, epic_dude, active) VALUES ($1, $2, $3, $4, B'1')", member.id, ctx.guild.id, reason, ctx.author.id)
         await ctx.send(f"Warned {member.display_name} {f'with reason: {reason}' if reason != 'No reason given' else ''}")
 
-    @commands.command()
+    @commands.group(invoke_without_command=True)
     @commands.has_permissions(kick_members=True)
     async def warns(self, ctx, member: discord.Member):
         warns = await self.bot.db.fetch("SELECT warn_id, reason, epic_dude FROM warns WHERE user_id = $1 AND guild_id = $2 AND active = B'1'", member.id, ctx.guild.id)
@@ -133,10 +133,24 @@ class Moderation(commands.Cog):
             warn_list.append(f"User: ({member.id}) {str(member)} Moderator: {str(ctx.guild.get_member(int(warn['epic_dude'])))}\nID:{warn['warn_id']}   {warn['reason']}")
         await ctx.send("```" + '\n'.join(warn_list) + "```")
 
-    @commands.command()
+    @warns.command(name='clear')
     @commands.has_permissions(kick_members=True)
-    async def allwarns(self, ctx, member: discord.Member):
-        warns = await self.bot.db.fetch("SELECT warn_id, reason, epic_dude, active FROM warns WHERE user_id = $1 AND guild_id = $2", member.id, ctx.guild.id)
+    async def _clear(self, ctx, member: discord.Member):
+        conn = await self.bot.db.acquire()
+        prep = await conn.prepare("UPDATE warns SET active = B'0' WHERE user_id = $1 AND guild_id = $2 AND active = B'1'")
+        await prep.fetch(member.id, ctx.guild.id)
+        ret = int(prep.get_statusmsg()[::-8])
+        if ret == 0:
+            await ctx.send('Member doesnt have any warns!')
+        else:
+            await ctx.send(f'Cleared {ret} warn{"s" if ret > 1 else ""}')
+
+    @warns.command()
+    @commands.has_permissions(kick_members=True)
+    async def all(self, ctx, member: discord.Member):
+        conn = await self.bot.db.acquire()
+        prep = await conn.prepare("SELECT warn_id, reason, epic_dude, active FROM warns WHERE user_id = $1 AND guild_id = $2")
+        warns = await prep.fetch(member.id, ctx.guild.id)
         if warns == []:
             await ctx.send(f"{str(member)} has no warns!")
             return
@@ -144,11 +158,6 @@ class Moderation(commands.Cog):
         for warn in warns:
             warn_list.append(f"User: ({member.id}) {str(member)} Moderator: {str(ctx.guild.get_member(int(warn['epic_dude'])))}  ({'ACTIVE' if warn['active'].to_int() else 'INACTIVE'})\nID:{warn['warn_id']}   {warn['reason']}")
         await ctx.send("```" + '\n'.join(warn_list) + "```")
-
-    @commands.command()
-    @commands.has_permissions(kick_members=True)
-    async def clearwarns(self, ctx, member: discord.Member):
-        await self.bot.db.fetch("UPDATE warns SET active = B'0' WHERE user_id = $1 AND guild_id = $2", member.id, ctx.guild.id)
 
     @commands.command()
     @commands.has_permissions(manage_channels=True)
