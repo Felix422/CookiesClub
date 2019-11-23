@@ -9,6 +9,10 @@ class SC(commands.Cog):
         self.bot = bot
         self.regex = r"^(.*?)(\(SC\s?#\s?[-?\d\+\s?]*\)|)$"
 
+    @property
+    def db(self):
+        return self.bot.db
+
     async def change_name(self, member, channel, showcase=0, mystery_showcase=0):
         """function for the actual name change"""
         stripped_name = re.search(self.regex, member.display_name, re.IGNORECASE).group(1)
@@ -40,7 +44,7 @@ class SC(commands.Cog):
             await ctx.send('SC count too high!')
             return
         if showcase > 70:
-            sc_trusted = await self.bot.db.fetch('SELECT user_id FROM sc_trusted')
+            sc_trusted = await self.db.fetch('SELECT user_id FROM sc_trusted')
             trusted_list = [trusted_user['user_id'] for trusted_user in sc_trusted]
             allowed = any([ctx.author.id in trusted_list,
                 discord.utils.get(ctx.guild.roles, name='Staff') in ctx.author.roles,
@@ -67,7 +71,7 @@ class SC(commands.Cog):
     async def trust(self, ctx, member: discord.Member):
         """Removes the sc70 limit for a person"""
         try:
-            await self.bot.db.fetch('INSERT INTO sc_trusted VALUES ($1)', member.id)
+            await self.db.fetch('INSERT INTO sc_trusted VALUES ($1)', member.id)
             await ctx.send(f"Trusted {member.mention}")
         except UniqueViolationError:
             await ctx.send('User already trusted')
@@ -76,7 +80,7 @@ class SC(commands.Cog):
     @commands.has_role('Staff')
     async def untrust(self, ctx, member: discord.Member):
         """Re-adds the sc70 limit for a person"""
-        result = await self.bot.db.execute('DELETE FROM sc_trusted WHERE user_id = $1', member.id)
+        result = await self.db.execute('DELETE FROM sc_trusted WHERE user_id = $1', member.id)
         if result == 'DELETE 1':
             await ctx.send(f'Untrusted {member.mention}')
         else:
