@@ -13,7 +13,7 @@ class EH(commands.Cog):
                 type(error) is commands.errors.CheckFailure]):
             return
         elif isinstance(error, commands.errors.CommandOnCooldown):
-            await ctx.send(f"Command on cooldown, try again in {round(error.retry_after)}s")
+            await ctx.send(f"Cool down! Try again in {round(error.retry_after)}s")
         elif any([isinstance(error, commands.errors.MissingRole),
                 isinstance(error, commands.errors.NotOwner)]):
             await ctx.send("You don't have permission for this")
