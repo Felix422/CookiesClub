@@ -53,8 +53,7 @@ class Owner(commands.Cog):
         new_forced_async_code = f'async def code():\n{textwrap.indent(code, "    ")}'
         try:
             exec(new_forced_async_code, env)
-            code = env['code']
-            await code()
+            await env['code']()
         except Exception:
             await ctx.send(f'```{traceback.format_exc()}```')
 
