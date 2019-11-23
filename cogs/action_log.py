@@ -19,13 +19,13 @@ class Action_log(commands.Cog):
         description=f"**message sent by {message.author.mention} deleted in <#{message.channel.id}>**\n{message.content}",)
         e.set_author(name=message.author, icon_url=message.author.avatar_url)
         e.set_footer(text=f"Author: {message.author.id} | Message ID: {message.id}")
-        if message.attachments:
-            attachment = message.attachments[0]
-            img_bytes = io.BytesIO(await attachment.read(use_cached=True))
-            file = discord.File(img_bytes, filename=attachment.filename)
-            e.set_image(url=f'attachments://{attachment.filename}')
-            await channel.send(embed=e, file=file)
-            return
+        # if message.attachments:
+        #     attachment = message.attachments[0]
+        #     img_bytes = io.BytesIO(await attachment.read(use_cached=True))
+        #     file = discord.File(img_bytes, filename=attachment.filename)
+        #     e.set_image(url=f'attachments://{attachment.filename}')
+        #     await channel.send(embed=e, file=file)
+        #     return
         await channel.send(embed=e)
 
     @commands.Cog.listener()
