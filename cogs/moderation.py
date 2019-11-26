@@ -47,6 +47,11 @@ class Moderation(commands.Cog):
     @commands.has_permissions(ban_members=True)
     @commands.bot_has_permissions(ban_members=True)
     async def ban(self, ctx, member: discord.Member, *, reason=None):
+        if member.guild_permissions.ban_members:
+            await ctx.send('That member is Admin/Staff, I can\'t do that!')
+            return
+        if member == ctx.author:
+            await ctx.send('You can\'t ban yourself!')
         await ctx.guild.ban(user=member, reason=reason, delete_message_days=7)
         await ctx.send(f"Banned {member.mention}!")
 
