@@ -18,7 +18,7 @@ class Info(commands.Cog):
         hours, remainder = divmod(int(seconds), 3600)
         minutes, seconds = divmod(remainder, 60)
         days, hours = divmod(hours, 24)
-        return f"{days}-{hours}:{minutes}:{seconds}"
+        return f"{days}:{hours}:{minutes}:{seconds}"
 
     @commands.command()
     @commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
@@ -94,7 +94,7 @@ class Info(commands.Cog):
     @commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
     @commands.check(is_channel_allowed)
     async def botinfo(self, ctx):
-        bot_uptime = f"Bot uptime: {str(Popen(['ps', '-o', 'etime', '-p', str(os.getpid())], stdout=PIPE, universal_newlines=True).communicate()[0][12::]).rstrip()}"
+        bot_uptime = f"Bot uptime: {str(Popen(['ps', '-o', 'etime', '-p', str(os.getpid())], stdout=PIPE, universal_newlines=True).communicate()[0][12::]).rstrip().replace('-', ':')}"
         e = discord.Embed(title="Bot info", description="General info about the bot", color=discord.Color.blurple())
         e.add_field(name=f"Versions:",value=f"{' '.join(distro_info())}\ndiscord.py {discord.__version__}\nPython {platform.python_version()}")
         e.add_field(name="Uptime:", value=f"System uptime: {self.s_to_time(linux_uptime())}\n{bot_uptime}", inline=False)
