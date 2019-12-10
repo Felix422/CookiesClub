@@ -15,27 +15,35 @@ class Bot(commands.Bot):
         )
 
     async def on_connect(self):
-        print("Connected to discord")
+        print('Connected to discord')
 
     async def on_ready(self):
         extensions = 0
-        for filename in filter(lambda filename: filename.endswith(".py") and not filename.startswith('_'), os.listdir("cogs")):
+        for filename in filter(lambda filename: filename.endswith('.py') and not filename.startswith('_'), os.listdir('cogs')):
             cog_name = filename[:-3]
             extensions += 1
             try:
-                self.load_extension(f"cogs.{cog_name}")
+                self.load_extension(f'cogs.{cog_name}')
             except commands.errors.ExtensionAlreadyLoaded:
                 pass
-        print(f"Loaded {extensions} extensions")
-        print("Initializing AIOHTTP client session")
+        print(f'Loaded {extensions} extensions')
+        print('Initializing AIOHTTP client session')
         self.aiohttp = aiohttp.ClientSession(
             loop=self.loop,
             timeout=aiohttp.ClientTimeout(total=5)
         )
-        print("Connecting to Database")
+        print('Connecting to Database')
         self.db = await asyncpg.create_pool(DB_BIND)
-        ret = await self.db.fetch('SELECT channel_id FROM allowed_channels')
-        self.allowed_channels = [channel_id['channel_id'] for channel_id in ret]
-        print(f"Bot Logged in as {self.user.name} and ready for duty!")
+        db_channels = await self.db.fetch('SELECT channel_id FROM allowed_channels')
+        db_words = await self.db.fetch('SELECT guild_id, word FROM automod')
+        self.automod_words = {}
+        for record in db_words:
+            try:
+                self.automod_words[str(record['guild_id'])].append(record['word'])
+            except KeyError:
+                self.automod_words[str(record['guild_id'])] = []
+                self.automod_words[str(record['guild_id'])].append(record['word'])
+        self.allowed_channels = [channel_id['channel_id'] for channel_id in db_channels]
+        print(f'Bot Logged in as {self.user.name} and ready for duty!')
 
 Bot().run(BOT_TOKEN)
