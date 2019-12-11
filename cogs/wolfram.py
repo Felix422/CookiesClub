@@ -11,8 +11,8 @@ class Wolfram(commands.Cog):
 
     @commands.command(aliases=['w', 'wa'])
     @commands.cooldown(rate=1, per=10.0, type=commands.BucketType.user)
-    async def wolfram(self, ctx, *, query="defaultdontsearchthis"):
-        if query == "defaultdontsearchthis":
+    async def wolfram(self, ctx, *, query=None):
+        if query is None:
             e = discord.Embed(colour=discord.Color.green())
             e.set_author(name="Wolfram")
             e.add_field(name="Usage:", value=".wolfram [question]")
