@@ -1,4 +1,5 @@
 import discord, timeago
+from urllib.parse import unquote
 from datetime import datetime
 from discord.ext import commands
 
@@ -53,11 +54,11 @@ class JoinLeave(commands.Cog):
         channel = discord.utils.get(guild.text_channels, name="member_logs")
         if channel is None:
             return
-        embed = discord.Embed(description=f"{user.mention} {user.name}#{user.discriminator} ", colour=discord.Color.red(), timestamp=datetime.utcnow())
+        embed = discord.Embed(description=f"{user.mention} {str(user)} ", colour=discord.Color.red(), timestamp=datetime.utcnow())
         embed.set_thumbnail(url=user.avatar_url)
-        async for entry in guild.audit_logs(limit=1):
+        async for entry in guild.audit_logs(limit=1, action=discord.AuditLogAction.ban):
             if entry.reason:
-                embed.add_field(name="Reason:", value=entry.reason)
+                embed.add_field(name="Reason:", value=unquote(entry.reason))
         embed.set_footer(text=f"User ID:{user.id}")
         embed.set_author(name=f"{user.name} got banned from the server", icon_url=user.avatar_url)
         await channel.send(embed=embed)
