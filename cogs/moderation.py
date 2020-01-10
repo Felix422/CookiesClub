@@ -190,7 +190,7 @@ class Moderation(commands.Cog):
             await ctx.send('Channel is not allowed')
             return
         self.bot.allowed_channels.remove(channel.id)
-        await ctx.send('Disallowed channel')
+        await ctx.send('Disallowed channel')    
 
 def setup(bot):
     bot.add_cog(Moderation(bot))
