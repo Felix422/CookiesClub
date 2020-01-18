@@ -3,7 +3,7 @@ from random import choice
 from discord.ext import commands
 from config import COUNTER_MESSAGES
 
-class MessageCounter(commands.Cog):
+class MessageCounter(commands.Cog, command_attrs=dict(hidden=True)):
 
     def __init__(self, bot):
         self.bot = bot
