@@ -1,4 +1,4 @@
-import discord, logging, os, aiohttp, asyncpg
+import logging, os, aiohttp, asyncpg
 from discord.ext import commands
 from config import BOT_TOKEN, COMMAND_PREFIX, DB_BIND
 
@@ -35,15 +35,18 @@ class Bot(commands.Bot):
         print('Connecting to Database')
         self.db = await asyncpg.create_pool(DB_BIND)
         db_channels = await self.db.fetch('SELECT channel_id FROM allowed_channels')
-        db_words = await self.db.fetch('SELECT guild_id, word FROM automod')
-        self.automod_words = {}
-        for record in db_words:
-            try:
-                self.automod_words[str(record['guild_id'])].append(record['word'])
-            except KeyError:
-                self.automod_words[str(record['guild_id'])] = []
-                self.automod_words[str(record['guild_id'])].append(record['word'])
+        # db_words = await self.db.fetch('SELECT guild_id, word FROM automod')
+        # self.automod_words = {}
+        # for record in db_words:
+        #     try:
+        #         self.automod_words[str(record['guild_id'])].append(record['word'])
+        #     except KeyError:
+        #         self.automod_words[str(record['guild_id'])] = []
+        #         self.automod_words[str(record['guild_id'])].append(record['word'])
         self.allowed_channels = [channel_id['channel_id'] for channel_id in db_channels]
+        # db_member_logs = await self.db.fetch('SELECT guild_id, channel_id FROM member_logs')
+        # member_logs = {}
+        # self.member_log_channels = None
         print(f'Bot Logged in as {self.user.name} and ready for duty!')
 
 Bot().run(BOT_TOKEN)
