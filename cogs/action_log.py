@@ -5,11 +5,11 @@ from collections import deque
 from datetime import datetime
 from discord.ext.commands import command, Cog, has_role
 
-class Action_log(Cog):
+class Action_log(Cog, command_attrs=dict(hidden=True)):
 
     def __init__(self, bot):
         self.bot = bot
-        self.vclogs = deque([], 10)
+        self.logs = deque([], 10)
 
     @Cog.listener()
     async def on_message_delete(self, message):
@@ -113,9 +113,9 @@ class Action_log(Cog):
         if vc_before.channel != vc_after.channel:
             if vc_after.channel:
                 time = datetime.now().strftime("%a, %I:%M%p")
-                self.vclogs.append(f"{datetime.now().strftime('%a, %I:%M%p')}: {member} joined channel {vc_after.channel.name}")
+                self.logs.append(f"{time}: {member} joined channel {vc_after.channel.name}")
             elif not vc_after.channel:
-                self.vclogs.append(f"{datetime.now().strftime('%a, %I:%M%p')}: {member} left channel {vc_before.channel.name}")
+                self.logs.append(f"{time}: {member} left channel {vc_before.channel.name}")
 
     @command(aliases=["vclog"])
     @has_role("Staff")
