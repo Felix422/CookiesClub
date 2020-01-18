@@ -5,6 +5,7 @@ import platform
 import os
 import datetime
 import typing
+import asyncio
 from uptime import _uptime_linux as linux_uptime
 from subprocess import Popen, PIPE
 from distro import linux_distribution as distro_info
@@ -186,7 +187,7 @@ class Info(commands.Cog):
         for word in args:
             output += word
             output += "%20"
-        output = re.sub("\s","",(output.lower()))[:-3]
+            output = re.sub(r"\s","",(output.lower()))[:-3]
         await ctx.send(baseurl + output)
 
     @commands.command()
