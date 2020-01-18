@@ -84,7 +84,8 @@ class Pages:
     async def show_page(self, page, *, first=False):
         self.current_page = page
         entries = self.get_page(page)
-        content = self.get_content(entries, page, first=first)
+        # content = self.get_content(entries, page, first=first)
+        content = None
         embed = self.get_embed(entries, page, first=first)
 
         if not self.paginating:
