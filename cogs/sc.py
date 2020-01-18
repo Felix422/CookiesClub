@@ -6,6 +6,7 @@ from discord.ext.commands import Cog, command, check, group, has_role
 from utils.checks import is_channel_allowed
 
 class SC(Cog):
+    """Showcase name tags"""
     def __init__(self, bot):
         self.bot = bot
         self.regex = re.compile(r'^(?P<name>.*?)(?P<tag>\(SC\s?#\s?[-?\d\+\s?]*\)|)$',
