@@ -10,7 +10,8 @@ from contextlib import redirect_stdout
 from tabulate import tabulate
 from discord.ext import commands
 
-class Owner(commands.Cog):
+class Owner(commands.Cog, command_attrs=dict(hidden=True)):
+    """Some commands for the bot Owner"""
     def __init__(self, bot):
         self.bot = bot
 
@@ -56,6 +57,8 @@ class Owner(commands.Cog):
             await env['code']()
         except Exception:
             await ctx.send(f'```{traceback.format_exc()}```')
+
+        # '@\u202Eeveryone'
 
 def setup(bot):
     bot.add_cog(Owner(bot))
