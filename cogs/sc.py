@@ -90,9 +90,9 @@ class SC(Cog):
         else:
             await ctx.send('User not trusted')
 
-    @showcase.command()
-    async def update(self, ctx):
-        name = self.regex.search(ctx.author.display_name).group('tag')
+    # @showcase.command()
+    # async def update(self, ctx):
+        # name = self.regex.search(ctx.author.display_name).group('tag')
 
 
 def setup(bot):
