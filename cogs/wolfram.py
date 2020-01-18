@@ -5,6 +5,7 @@ from discord.ext import commands
 
 from config import WOLFRAM_KEY
 class Wolfram(commands.Cog):
+    """Wolfram API integration"""
 
     def __init__(self, bot):
         self.bot = bot
